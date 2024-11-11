@@ -1,0 +1,83 @@
+
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">User Register</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Accounts</a></li>
+              <li class="breadcrumb-item active">System User Register</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <ejs-grid #Grid allowResizing="true" [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+              <e-columns>
+                <e-column field='email' headerText="Email" width="140" minWidth="140"></e-column>
+                <e-column field='name' headerText='Role' width="120" minWidth="120"></e-column>
+              </e-columns>
+              <ng-template #editSettingsTemplate let-data>
+                <div [formGroup]="registerForm">
+                  <div class="row">
+  
+                    <div class="form-group col-md-6">
+                      <div class="e-float-input e-control-wrapper">
+                        <input formControlName="email" id="email" type="text" maxlength="50" autocomplete="off">
+                        <span class="e-float-line"></span>
+                        <label class="e-float-text e-label-top" for="email">Email</label>
+                      </div>
+                      <div [style.visibility]='validateControl("email")? "visible": "hidden"'>
+                          <label class="e-error" for="email" style="display: block;">*Email is required</label>
+                      </div>
+                    </div>
+  
+                    <div class="form-group col-md-6">
+                      <div class="e-float-input e-control-wrapper">
+                        <input formControlName="password" id="password" type="password"   autocomplete="off">
+                        <span class="e-float-line"></span>
+                        <label class="e-float-text e-label-top" for="password">Password</label>
+                      </div>
+                      <div [style.visibility]='validateControl("password")? "visible": "hidden"'>
+                          <label class="e-error" for="password" style="display: block;">*Password is required</label>
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <div class="e-float-input e-control-wrapper">
+                        <input type="password" formControlName="confirmPassword" id="confirmPassword" type="password"  autocomplete="off">
+                        <span class="e-float-line"></span>
+                        <label class="e-float-text e-label-top" for="confirmPassword">Confirm Password </label>
+                      </div>
+                      <div>
+                          <label *ngIf="validateControl('confirmPassword') && hasError('confirmPassword', 'required')" class="e-error" for="confirmPassword" style="display: block;">*Confirm Password is required</label>
+                          <label *ngIf="validateControl('confirmPassword') && hasError('confirmPassword', 'mustMatch')" class="e-error" for="confirmPassword" style="display: block;">*Confirm Password must be match</label>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <ejs-dropdownlist formControlName="role" [dataSource]='roleList' [fields]="{ text: 'name', value: 'name' }" placeholder="Role" allowFiltering="true"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
+                      <div [style.visibility]='validateControl("role")? "visible": "hidden"'>
+                        <label class="e-error" style="display: block;">*Role is required</label>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </ng-template>
+            </ejs-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  
