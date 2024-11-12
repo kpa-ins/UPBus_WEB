@@ -93,7 +93,7 @@ export class BusComponent {
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const id = data[0].operatorID;
+      const id = data[0].busNo;
       this.deleteBus(id);
       return;
     }
