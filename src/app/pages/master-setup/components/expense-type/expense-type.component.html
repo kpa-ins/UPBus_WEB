@@ -22,7 +22,13 @@
               <e-column field='expCode' headerText='Expense Code' [isPrimaryKey]="true" width="70"></e-column>
               <e-column field='expName' headerText="Expense Name" width="120" minWidth="120"></e-column>
               <e-column field='expType' headerText="Expense Type" width="120" minWidth="120"></e-column>
-              <e-column field='active' headerText="Active" width="100" minWidth="100"></e-column>
+              <e-column field='active' headerText="Is Use?" width="70" minWidth="70">
+                <ng-template #template let-data>
+                  <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
+                    {{ data.active ? 'Yes' : 'No' }}
+                  </span>
+                </ng-template>
+              </e-column>
               <!-- <e-column field='createdDate' headerText='Created Date' type="date" format="dd-MM-yyyy" width="130"></e-column> -->
             </e-columns>
             <ng-template #editSettingsTemplate let-data>

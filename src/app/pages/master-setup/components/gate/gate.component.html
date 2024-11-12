@@ -21,21 +21,9 @@
             <e-columns>
               <e-column field='gateCode' headerText='Gate Code' [isPrimaryKey]="true" width="70"></e-column>
               <e-column field='gateName' headerText="Gate Name" width="120" minWidth="120"></e-column>
-              <!-- <e-column field='active' headerText="Is Use?" width="70" minWidth="70">
-                <ng-template #template let-data>
-                  <div *ngIf="data.active;else Others">
-                    <span class="text-success">Yes</span>
-                  </div>
-                  <ng-template #Others>
-                    <div>
-                      <span class="text-dark">No</span>
-                    </div>
-                  </ng-template>
-                </ng-template>
-              </e-column> -->
               <e-column field='active' headerText="Is Use?" width="70" minWidth="70">
                 <ng-template #template let-data>
-                  <span [ngStyle]="{'color': data.active ? 'red' : 'dark'}">
+                  <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
                     {{ data.active ? 'Yes' : 'No' }}
                   </span>
                 </ng-template>
