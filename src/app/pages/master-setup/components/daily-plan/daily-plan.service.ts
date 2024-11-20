@@ -36,7 +36,7 @@ export class DailyPlanService {
     return this.http.put<any>(`${environment.baseUrl}/api/MasterSetup/UpdateDailyPlan`, data, httpOptions);
   }
 
-  deleteDailyPlan(id: string) {
+  deleteDailyPlans(id: string) {
     return this.http.delete<any>(`${environment.baseUrl}/api/MasterSetup/DeleteDailyPlan/${id}`, httpOptions);
   }
 

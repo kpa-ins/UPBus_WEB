@@ -20,7 +20,10 @@
           <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
               <e-column field='tripCode' headerText="Trip Code" width="120" minWidth="120" [isPrimaryKey]="true"></e-column>
-              <e-column field='tripDate' headerText="Trip Date" type="date" [format]="{type: 'date', format:'dd-MMM-yyyy hh:mm a'}" width="180" minWidth="180"></e-column>
+              <e-column field='tripDate' headerText="Trip Date"
+                type="date" [format]="{type: 'date', format:'MM-dd-yyyy HH:mm:ss'}"
+                width="180" minWidth="180">
+              </e-column>
               <e-column field='busNo' headerText="Bus No." width="100" minWidth="100"></e-column>
               <e-column field='driverName' headerText="Driver Name" width="100" minWidth="100"></e-column>
               <e-column field='tripTime' headerText="Trip Time" width="100" minWidth="100"></e-column>
@@ -49,7 +52,6 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="row">
                   <div class="form-group col-md-6">
                     <ejs-textbox
@@ -72,20 +74,18 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="row">
                   <div class="form-group col-md-6">
                     <label class="required">Trip Date</label>
                     <ejs-datepicker
                       formControlName="tripDate"
                       placeholder="Select Trip Date"
-                      format="MM-dd-yyyy"
-                    ></ejs-datepicker>
-                    <div *ngIf="validateControl('tripDate')" class="text-danger">
-                      Trip Date is required.
-                    </div>
+                      [format]="'MM-dd-yyyy HH:mm:ss'">
+                    </ejs-datepicker>
+                      <div *ngIf="dailyPlanForm.controls['tripDate'].invalid && (dailyPlanForm.controls['tripDate'].touched || dailyPlanForm.controls['tripDate'].dirty)">
+                        <small class="text-danger">Please select a valid date.</small>
+                      </div>
                   </div>
-
                   <div class="form-group col-md-6">
                     <label class="required">Track</label>
                     <ejs-textbox

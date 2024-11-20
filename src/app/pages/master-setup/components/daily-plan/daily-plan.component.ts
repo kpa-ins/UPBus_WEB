@@ -57,18 +57,6 @@ export class DailyPlanComponent {
     this.loadTableData();
     this.loadTripCodes();
     this.loadBusList();
-    this.initializeForm(); // Initialize the form
-  }
-
-  initializeForm() {
-    this.dailyPlanForm = new FormGroup({
-      tripCode: new FormControl('', Validators.required),
-      tripDate: new FormControl('', Validators.required),
-      tripTime: new FormControl('', Validators.required),
-      track: new FormControl('', Validators.required),
-      busNo: new FormControl('', Validators.required),
-      driverName: new FormControl({ value: '', disabled: true }, Validators.required), // Disabled by default
-    });
   }
 
   loadTripCodes() {
@@ -100,6 +88,7 @@ export class DailyPlanComponent {
         this.spinner.hide();
     });
   }
+
   onBusNoChange(busNo: string) {
     if (busNo) {
       this.service.getDriverByBusNo(busNo).subscribe((result: any) => {
@@ -118,60 +107,58 @@ export class DailyPlanComponent {
   }
 
   actionBegin(args: SaveEventArgs): void {
-    if (args.requestType === 'add' || args.requestType === 'beginEdit') {
-      this.submitClicked = false;
-      this.initializeForm(); // Reinitialize form for a new entry or editing
-
-      // If it's a new entry, enable the busNo and driverName fields properly
-      this.dailyPlanForm.get('busNo')?.setValue(''); // You might want to clear this field initially
-      this.dailyPlanForm.get('driverName')?.setValue(''); // Reset driverName
-      this.dailyPlanForm.get('driverName')?.disable(); // Disable driverName initially
-
-      return;
+    if (args.requestType === 'add') {
+        this.submitClicked = false;
+        this.dailyPlanForm = this.createFormGroup(args.rowData);
+        return;
     }
 
+    if (args.requestType === 'beginEdit') {
+      this.submitClicked = false;
+      this.dailyPlanForm = this.updateFormGroup(args.rowData);
+      return;
+  }
+
     if (args.requestType === 'save') {
-      this.submitClicked = true;
-
-      // Extract the form data
-      const formData = this.dailyPlanForm.getRawValue();  // Get all form data
-
-      if (this.dailyPlanForm.valid) {
-        // Ensure the date format is correct
-        formData.tripDate = this.formatDate(formData.tripDate);
-
-        // If it's an 'add' action, create a new entry
-        if (args.action === 'add') {
-          this.createDailyPlan(formData);  // Pass the formatted formData to create
+        this.submitClicked = true;
+        if (this.dailyPlanForm.valid) {
+            let formData = this.dailyPlanForm.value;
+            if (args.action === 'add') {
+              this.createDailyPlan(formData);
+            }
+            else {
+              this.updateDailyPlan(formData);
+            }
         } else {
-          this.updateDailyPlan(formData);  // Pass the formatted formData to update
+            args.cancel = true;
         }
-      } else {
-        args.cancel = true;  // If form is invalid, prevent save
-      }
+        return;
     }
 
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const id = data[0].tripCode;  // Assuming 'tripCode' is the identifier for deletion
+      const id = data[0].tripCode;
       this.deleteDailyPlan(id);
     }
   }
 
   createDailyPlan(formData: any) {
-    // Show the spinner while saving
+    //const data = new FormData();
     this.spinner.show();
+    // if (formData.tripDate) {
+    //   data.append("tripDate", formData.tripDate.toISOString());
+    // }
     this.service
-      .saveDailyPlan(formData)  // Call the service to save the formData
-      .pipe(catchError((err) => of(this.showError(err))))  // Handle errors if any
+      .saveDailyPlan(formData)
+      .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
-        this.spinner.hide(); // Hide the spinner after save
-        this.loadTableData(); // Refresh the table with the updated data
+        this.spinner.hide();
+        this.loadTableData();
         if (result.status) {
-          this.showSuccess(result.messageContent);  // Show success message
+          this.showSuccess(result.messageContent);
         } else {
-          Swal.fire('Error', result.messageContent, 'error'); // Show error if saving fails
+          Swal.fire('Error', result.messageContent, 'error');
         }
       });
   }
@@ -209,6 +196,18 @@ export class DailyPlanComponent {
     }
   }
 
+  createFormGroup(data: any): FormGroup {
+    return new FormGroup({
+      tripCode: new FormControl('', Validators.required),
+      tripDate: new FormControl('', Validators.required),
+      tripTime: new FormControl('', Validators.required),
+      track: new FormControl('', Validators.required),
+      busNo: new FormControl('', Validators.required),
+      driverName: new FormControl('', Validators.required),
+
+    });
+  }
+
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
       tripCode: new FormControl(data.tripCode, Validators.required),
@@ -217,34 +216,36 @@ export class DailyPlanComponent {
       track: new FormControl(data.track, Validators.required),
       busNo: new FormControl(data.busNo, Validators.required),
       driverName: new FormControl(data.driverName, Validators.required),
+
     });
   }
 
-  formatDate(date: any) {
-    return date ? new Date(date).toISOString().split('T')[0] : null;
-  }
+  // formatDate(date: any): string {
+  //   return date ? new Date(date).toISOString().split('T')[0] : ''; // Format as YYYY-MM-DD
+  // }
 
   deleteDailyPlan(id: any) {
+    console.log('Delete triggered for ID:', id);
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this data!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#DD6B55',
-      cancelButtonText: 'No, cancel',
-      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+      confirmButtonText: 'Yes, I am sure!',
     }).then((response: any) => {
       if (response.value) {
         this.spinner.show();
         this.service
-          .deleteDailyPlan(id)
+          .deleteDailyPlans(id)
           .pipe(catchError((err) => of(this.showError(err))))
           .subscribe((result) => {
-            if (result.status == true) {
+            this.spinner.hide();
+            if (result.status === true) {
               this.showSuccess(result.messageContent);
               this.loadTableData();
             } else {
-              this.spinner.hide();
               Swal.fire('Daily_Plan', result.messageContent, 'error');
             }
           });
@@ -286,4 +287,5 @@ export class DailyPlanComponent {
       };
     }
   }
+
 }
