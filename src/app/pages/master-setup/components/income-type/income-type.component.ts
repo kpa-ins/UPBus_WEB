@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GridModule,DialogEditEventArgs, EditSettingsModel, ExcelQueryCellInfoEventArgs, GridComponent, GridLine, PageSettingsModel, SaveEventArgs, ToolbarItems } from '@syncfusion/ej2-angular-grids';
+import { GridModule,DialogEditEventArgs, EditSettingsModel, ExcelQueryCellInfoEventArgs, GridComponent, GridLine, PageSettingsModel, SaveEventArgs, ToolbarItems, filterDialogClose } from '@syncfusion/ej2-angular-grids';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, of } from 'rxjs';
 import { Browser } from '@syncfusion/ej2-base';
@@ -35,9 +35,10 @@ export class IncomeTypeComponent {
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
+  isEditMode: boolean = false;
 
   incomeTypeForm: any;
-  incomeTypeList: any[] = ["GATE", "BUS","Trip"];
+  incomeTypeList: any[] = ["GATE", "BUS","TRIP"];
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -64,12 +65,14 @@ export class IncomeTypeComponent {
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
+        this.isEditMode = false;
         this.incomeTypeForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
+      this.isEditMode = true;
       this.incomeTypeForm = this.updateFormGroup(args.rowData);
       return;
   }
@@ -228,5 +231,3 @@ export class IncomeTypeComponent {
     }
   }
 }
-
-

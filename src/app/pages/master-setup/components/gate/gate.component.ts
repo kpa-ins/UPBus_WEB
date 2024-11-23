@@ -35,6 +35,7 @@ export class GateComponent {
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
+  isEditMode: boolean = false;
 
   gateForm: any;
   //ownerList: any[] = ["UP", "Other"];
@@ -64,12 +65,14 @@ export class GateComponent {
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
+        this.isEditMode = false;
         this.gateForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
+      this.isEditMode = true;
       this.gateForm = this.updateFormGroup(args.rowData);
       return;
   }
@@ -101,7 +104,7 @@ export class GateComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 700;
+      args.dialog.width = 400;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();

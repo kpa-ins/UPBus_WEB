@@ -35,9 +35,10 @@ export class ExpenseTypeComponent {
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
+  isEditMode: boolean = false;
 
   expenseTypeForm: any;
-  expenseTypeList: any[] = ["GATE", "BUS","Trip"];
+  expenseTypeList: any[] = ["GATE", "BUS","TRIP"];
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -64,12 +65,14 @@ export class ExpenseTypeComponent {
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
+        this.isEditMode = false;
         this.expenseTypeForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
+      this.isEditMode = true;
       this.expenseTypeForm = this.updateFormGroup(args.rowData);
       return;
   }

@@ -35,7 +35,7 @@ export class BusComponent {
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
-
+  isEditMode: boolean = false;
   busForm: any;
   ownerList: any[] = ["UP", "Other"];
 
@@ -64,15 +64,17 @@ export class BusComponent {
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
+        this.isEditMode = false;
         this.busForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
+      this.isEditMode = true;
       this.busForm = this.updateFormGroup(args.rowData);
       return;
-  }
+    }
 
     if (args.requestType === 'save') {
         this.submitClicked = true;
@@ -93,8 +95,8 @@ export class BusComponent {
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const id = data[0].busNo;
-      this.deleteBus(id);
+      const busNo = data[0].busNo;
+      this.deleteBus(busNo);
       return;
     }
   }

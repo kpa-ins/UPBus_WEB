@@ -14,20 +14,21 @@ import { ToastrService } from 'ngx-toastr';
 import { TextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { DailyPlanService } from './daily-plan.service';
-import { DatePickerModule } from '@syncfusion/ej2-angular-calendars';
-
+import { DatePickerModule, DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-daily-plan',
   standalone: true,
   imports:[
-
+    CommonModule,
     FormsModule,
     NgxSpinnerModule,
     ReactiveFormsModule,
     GridModule,
     TextBoxModule,
     DropDownListAllModule,
-    DatePickerModule
+    DatePickerModule,
+    DateTimePickerModule
 
   ],
   templateUrl: './daily-plan.component.html',
@@ -85,6 +86,7 @@ export class DailyPlanComponent {
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
+        console.log(result);
         this.spinner.hide();
     });
   }
@@ -124,9 +126,12 @@ export class DailyPlanComponent {
         if (this.dailyPlanForm.valid) {
             let formData = this.dailyPlanForm.value;
             if (args.action === 'add') {
+              //formData.tripDate = moment(formData.tripDate).format('dd-MMM-yyyy');
               this.createDailyPlan(formData);
             }
             else {
+              //formData.tripDate = moment(formData.tripDate).format('dd-MMM-yyyy');
+
               this.updateDailyPlan(formData);
             }
         } else {
@@ -138,17 +143,15 @@ export class DailyPlanComponent {
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const id = data[0].tripCode;
+      const id = data[0].dailyPlanID;
       this.deleteDailyPlan(id);
     }
   }
 
   createDailyPlan(formData: any) {
-    //const data = new FormData();
+    const formattedDate = this.formatDate(formData.tripDate);
+    formData.tripDate = formattedDate; // Replace tripDate with formatted date
     this.spinner.show();
-    // if (formData.tripDate) {
-    //   data.append("tripDate", formData.tripDate.toISOString());
-    // }
     this.service
       .saveDailyPlan(formData)
       .pipe(catchError((err) => of(this.showError(err))))
@@ -163,8 +166,15 @@ export class DailyPlanComponent {
       });
   }
 
+  formatDate(date: any): string {
+    if (!date) return ''; // Handle empty date
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+    return new Intl.DateTimeFormat('en-GB', options).format(new Date(date)); // Example: '25-Nov-2024'
+  }
+
   updateDailyPlan(formData: any) {
-    // Show the spinner while updating
+    const formattedDate = this.formatDate(formData.tripDate);
+    formData.tripDate = formattedDate; // Replace tripDate with formatted date
     this.spinner.show();
     this.service
       .updateDailyPlan(formData)  // Pass the updated formData here
@@ -182,7 +192,7 @@ export class DailyPlanComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 700;
+        args.dialog.width = 700;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
@@ -199,29 +209,28 @@ export class DailyPlanComponent {
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
       tripCode: new FormControl('', Validators.required),
-      tripDate: new FormControl('', Validators.required),
-      tripTime: new FormControl('', Validators.required),
-      track: new FormControl('', Validators.required),
       busNo: new FormControl('', Validators.required),
       driverName: new FormControl('', Validators.required),
-
+      tripDate: new FormControl('', Validators.required),
+      tripTime: new FormControl('', Validators.required),
+      track: new FormControl('', Validators.required)
     });
   }
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
+      dailyPlanID: new FormControl(data.dailyPlanID, Validators.required),
       tripCode: new FormControl(data.tripCode, Validators.required),
-      tripDate: new FormControl(data.tripDate, Validators.required),
-      tripTime: new FormControl(data.tripTime, Validators.required),
-      track: new FormControl(data.track, Validators.required),
       busNo: new FormControl(data.busNo, Validators.required),
       driverName: new FormControl(data.driverName, Validators.required),
-
+      tripDate: new FormControl(data.tripDate, Validators.required),
+      tripTime: new FormControl(data.tripTime, Validators.required),
+      track: new FormControl(data.track, Validators.required)
     });
   }
 
   // formatDate(date: any): string {
-  //   return date ? new Date(date).toISOString().split('T')[0] : ''; // Format as YYYY-MM-DD
+  //   return date ? new Date(date).toLocaleDateString().split('T')[0] : ''; // Format as YYYY-MM-DD
   // }
 
   deleteDailyPlan(id: any) {
@@ -289,3 +298,7 @@ export class DailyPlanComponent {
   }
 
 }
+function moment(tripDate: any) {
+  throw new Error('Function not implemented.');
+}
+

@@ -22,14 +22,13 @@
               <e-column field='tripCode' headerText='Trip Code' [isPrimaryKey]="true" width="70"></e-column>
               <e-column field='tripName' headerText="Trip Name" width="120" minWidth="120"></e-column>
               <e-column field='trpType' headerText="Trip Type" width="120" minWidth="120"></e-column>
-              <e-column field='active' headerText="Is Use?" width="70" minWidth="70">
+              <e-column field="active" headerText="Is Use?" width="70" minWidth="70">
                 <ng-template #template let-data>
                   <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
                     {{ data.active ? 'Yes' : 'No' }}
                   </span>
                 </ng-template>
-              </e-column>
-              <!-- <e-column field='createdDate' headerText='Created Date' type="date" format="dd-MM-yyyy" width="130"></e-column> -->
+              </e-column>              <!-- <e-column field='createdDate' headerText='Created Date' type="date" format="dd-MM-yyyy" width="130"></e-column> -->
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <div [formGroup]="tripTypeForm">
@@ -37,12 +36,20 @@
                 <div class="row">
                   <div class="form-group col-md-6">
                     <div class="e-float-input e-control-wrapper">
-                      <input formControlName="tripCode" id="tripCode" type="text" maxlength="7" oninput="this.value = this.value.toUpperCase()" autocomplete="off">
+                      <input
+                        formControlName="tripCode"
+                        id="tripCode"
+                        type="text"
+                        maxlength="7"
+                        oninput="this.value = this.value.toUpperCase()"
+                        autocomplete="off"
+                        [readonly]="isEditMode"
+                      >
                       <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top" for="tripCode">Trip Code</label>
+                      <label class="e-float-text e-label-top required" for="tripCode">Trip Code</label>
                     </div>
-                    <div [style.visibility]='validateControl("tripCode")? "visible": "hidden"'>
-                        <label class="e-error" for="tripCode" style="display: block;">*Trip code is required.</label>
+                    <div [style.visibility]='validateControl("tripCode") ? "visible" : "hidden"'>
+                      <label class="e-error" for="tripCode" style="display: block;">*Trip Code is required</label>
                     </div>
                   </div>
 
@@ -50,7 +57,7 @@
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="tripName" id="tripName" type="text" maxlength="50"  autocomplete="off">
                       <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top" for="tripName">Trip Name</label>
+                      <label class="e-float-text e-label-top required" for="tripName">Trip Name</label>
                     </div>
                     <div [style.visibility]='validateControl("tripName")? "visible": "hidden"'>
                         <label class="e-error" for="tripName" style="display: block;">*Trip Name is required</label>

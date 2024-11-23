@@ -22,14 +22,13 @@
               <e-column field='incCode' headerText='Income Code' [isPrimaryKey]="true" width="100"></e-column>
               <e-column field='incName' headerText="Income Name" width="120" minWidth="120"></e-column>
               <e-column field='incType' headerText="Income Type" width="120" minWidth="120"></e-column>
-              <e-column field='active' headerText="Is Use?" width="70" minWidth="70">
+              <e-column field="active" headerText="Is Use?" width="70" minWidth="70">
                 <ng-template #template let-data>
                   <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
                     {{ data.active ? 'Yes' : 'No' }}
                   </span>
                 </ng-template>
               </e-column>
-              <!-- <e-column field='createdDate' headerText='Created Date' type="date" format="dd-MM-yyyy" width="130"></e-column> -->
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <div [formGroup]="incomeTypeForm">
@@ -37,12 +36,20 @@
                 <div class="row">
                   <div class="form-group col-md-6">
                     <div class="e-float-input e-control-wrapper">
-                      <input formControlName="incCode" id="incCode" type="text" maxlength="7" oninput="this.value = this.value.toUpperCase()" autocomplete="off">
+                      <input
+                        formControlName="incCode"
+                        id="incCode"
+                        type="text"
+                        maxlength="7"
+                        oninput="this.value = this.value.toUpperCase()"
+                        autocomplete="off"
+                        [readonly]="isEditMode"
+                      >
                       <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top" for="incCode">Income Code</label>
+                      <label class="e-float-text e-label-top required" for="incCode">Income Code</label>
                     </div>
-                    <div [style.visibility]='validateControl("incCode")? "visible": "hidden"'>
-                        <label class="e-error" for="incCode" style="display: block;">*Income code is required.</label>
+                    <div [style.visibility]='validateControl("incCode") ? "visible" : "hidden"'>
+                      <label class="e-error" for="incCode" style="display: block;">*Income Code is required</label>
                     </div>
                   </div>
 
@@ -50,7 +57,7 @@
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="incName" id="incName" type="text" maxlength="50"  autocomplete="off">
                       <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top" for="incName">Income Name</label>
+                      <label class="e-float-text e-label-top required" for="incName">Income Name</label>
                     </div>
                     <div [style.visibility]='validateControl("incName")? "visible": "hidden"'>
                         <label class="e-error" for="incName" style="display: block;">*Income Name is required</label>

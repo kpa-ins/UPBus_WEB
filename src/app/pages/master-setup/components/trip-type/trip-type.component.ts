@@ -35,7 +35,7 @@ export class TripTypeComponent {
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
-
+  isEditMode: boolean = false;
   tripTypeForm: any;
   tripTypeList: any[] = ["UP", "DOWN"];
 
@@ -64,12 +64,14 @@ export class TripTypeComponent {
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
+        this.isEditMode = false;
         this.tripTypeForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
+      this.isEditMode = true;
       this.tripTypeForm = this.updateFormGroup(args.rowData);
       return;
   }
@@ -228,5 +230,3 @@ export class TripTypeComponent {
     }
   }
 }
-
-

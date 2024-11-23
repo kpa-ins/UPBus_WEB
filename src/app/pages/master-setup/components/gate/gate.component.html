@@ -21,48 +21,50 @@
             <e-columns>
               <e-column field='gateCode' headerText='Gate Code' [isPrimaryKey]="true" width="70"></e-column>
               <e-column field='gateName' headerText="Gate Name" width="120" minWidth="120"></e-column>
-              <e-column field='active' headerText="Is Use?" width="70" minWidth="70">
+              <e-column field="active" headerText="Is Use?" width="70" minWidth="70">
                 <ng-template #template let-data>
                   <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
                     {{ data.active ? 'Yes' : 'No' }}
                   </span>
                 </ng-template>
               </e-column>
-              <!-- <e-column field='createdDate' headerText='Created Date' type="date" format="dd-MM-yyyy" width="130"></e-column> -->
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <div [formGroup]="gateForm">
 
                 <div class="row">
-                  <div class="form-group col-md-8">
+                  <!-- Gate Code Field -->
+                  <div class="form-group col-md-6">
                     <div class="e-float-input e-control-wrapper">
-                      <input formControlName="gateCode" id="gateCode" type="text" maxlength="7" oninput="this.value = this.value.toUpperCase()" autocomplete="off">
+                      <input formControlName="gateCode" id="gateCode" type="text" maxlength="7" oninput="this.value = this.value.toUpperCase()" autocomplete="off" [readonly]="isEditMode">
                       <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top" for="gateCode">Gate Code</label>
+                      <label class="e-float-text e-label-top required" for="gateCode">Gate Code</label>
                     </div>
-                    <div [style.visibility]='validateControl("gateCode")? "visible": "hidden"'>
-                        <label class="e-error" for="gateCode" style="display: block;">*Gate code is required.</label>
+                    <div [style.visibility]='validateControl("gateCode") ? "visible" : "hidden"'>
+                      <label class="e-error" for="gateCode" style="display: block;">*Gate Code is required</label>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-8">
-                    <div class="e-float-input e-control-wrapper">
-                      <input formControlName="gateName" id="gateName" type="text" maxlength="50"  autocomplete="off">
-                      <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top" for="gateName">Gate Name</label>
-                    </div>
-                    <div [style.visibility]='validateControl("gateName")? "visible": "hidden"'>
-                        <label class="e-error" for="gateName" style="display: block;">*Gate Name is required</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-8 active mt-4" >
-                      <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
                   </div>
 
+                  <!-- Gate Name Field -->
+                  <div class="form-group col-md-6">
+                    <div class="e-float-input e-control-wrapper">
+                      <input formControlName="gateName" id="gateName" type="text" maxlength="50" autocomplete="off">
+                      <span class="e-float-line"></span>
+                      <label class="e-float-text e-label-top required" for="gateName">Gate Name</label>
+                    </div>
+                    <div [style.visibility]='validateControl("gateName") ? "visible" : "hidden"'>
+                      <label class="e-error" for="gateName" style="display: block;">*Gate Name is required</label>
+                    </div>
+                  </div>
                 </div>
+
+                <div class="row">
+                  <!-- Active Checkbox -->
+                  <div class="form-group col-md-6">
+                    <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
+                  </div>
+                </div>
+
               </div>
             </ng-template>
           </ejs-grid>
