@@ -22,7 +22,7 @@
               <!-- <e-column field='dailyPlanID' headerText="Daily Plan ID" width="100" minWidth="100" [isPrimaryKey]="true" [visible]="false"></e-column> -->
               <e-column field='tripCode' headerText="Trip Code" width="100" minWidth="100"></e-column>
               <e-column field='tripDate' headerText="Trip Date"
-                type="date" [format]="{type: 'date', format:'MM-dd-yyyy'}"
+                type="date" [format]="{type: 'date', format:'dd-MMM-yyyy hh:mm a'}"
                 width="100" minWidth="100">
               </e-column>
               <e-column field='busNo' headerText="Bus No." width="100" minWidth="100"></e-column>
@@ -35,19 +35,14 @@
                 <div class="row">
                   <div class="form-group col-md-6">
                     <label class="required">Trip Code</label>
-                    <ejs-dropdownlist
-                      formControlName="tripCode"
-                      [dataSource]="tripCodeList"
-                      [fields]="{ text: 'tripCode', value: 'tripCode' }"
-                      placeholder="Select Trip Code"
-                    ></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="tripCode" [dataSource]="tripCodeList" [fields]="{ text: 'tripCode', value: 'tripCode' }" placeholder="Select Trip Code" [autofocus]="true"></ejs-dropdownlist>
                     <div *ngIf="validateControl('tripCode')" class="text-danger">
                       Trip Code is required.
                     </div>
                   </div>
                   <div class="form-group col-md-6">
                     <label  class="required">Bus No</label>
-                    <ejs-dropdownlist formControlName="busNo" [dataSource]='busList' [fields]="{ text: 'busNo', value: 'busNo' }" allowFiltering="true" (change)="onBusNoChange($event.value)" popupHeight='200px' floatLabelType='Always' [autofocus]="true"></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="busNo" [dataSource]='busList' [fields]="{ text: 'busNo', value: 'busNo' }" allowFiltering="true" (change)="onBusNoChange($event.value)" popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("busNo")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Bus number is required</label>
                     </div>
@@ -55,21 +50,11 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-md-6">
-                    <ejs-textbox
-                      id="driverName"
-                      formControlName="driverName"
-                      placeholder="Driver Name"
-                      [readonly]="true"
-                      floatLabelType="Always"
-                    ></ejs-textbox>
+                    <ejs-textbox id="driverName" formControlName="driverName" placeholder="Driver Name" [readonly]="true" floatLabelType="Always"></ejs-textbox>
                   </div>
                   <div class="form-group col-md-6">
                     <label class="required">Trip Time</label>
-                    <ejs-dropdownlist
-                      formControlName="tripTime"
-                      [dataSource]="dailyPlanList"
-                      placeholder="Select Trip Time"
-                    ></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="tripTime" [dataSource]="dailyPlanList" placeholder="Select Trip Time"></ejs-dropdownlist>
                     <div *ngIf="validateControl('tripTime')" class="text-danger">
                       Trip Time is required.
                     </div>
@@ -77,28 +62,21 @@
                 </div>
                 <div class="row">
 
-                  <div class="form-group col-md-6">
-                      <label class="required">Trip Date</label>
-                      <ejs-datepicker
-                          formControlName="tripDate"
-                          [format]="'dd-MMM-yyyy'"
-                          placeholder="Select Trip Date">
-                        </ejs-datepicker>
-                        <div [style.visibility]='validateControl("tripDate")? "visible": "hidden"'>
-                          <label class="e-error" style="display: block;">*Trip Date is required</label>
-                        </div>
+                <div class="form-group col-md-6">
+                  <label class="required">Trip Date</label>
+                  <ejs-datetimepicker formControlName="tripDate" [format]="'dd-MMM-yyyy hh:mm a'" placeholder="Select Trip Date"></ejs-datetimepicker>
+                  <div [style.visibility]='validateControl("tripDate")? "visible": "hidden"'>
+                    <label class="e-error" style="display: block;">*Trip Date is required</label>
                   </div>
+                </div>
 
-                  <div class="form-group col-md-6">
-                    <label class="required">Track</label>
-                    <ejs-textbox
-                      formControlName="track"
-                      placeholder="Enter Track"
-                    ></ejs-textbox>
-                    <div *ngIf="validateControl('track')" class="text-danger">
-                      Track is required.
-                    </div>
+                <div class="form-group col-md-6">
+                  <label class="required">Track</label>
+                  <ejs-textbox formControlName="track" placeholder="Enter Track" autocomplete="off"></ejs-textbox>
+                  <div *ngIf="validateControl('track')" class="text-danger">
+                    Track is required.
                   </div>
+                </div>
                 </div>
               </form>
             </ng-template>

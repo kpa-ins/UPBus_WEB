@@ -31,7 +31,6 @@ export class AuthService {
   isUserAuthenticated (): boolean {
     const token = localStorage.getItem("token");
     return token != null && !this.jwtHelper.isTokenExpired(token);
-    return true;
   }
 
   getCurrentUser() {

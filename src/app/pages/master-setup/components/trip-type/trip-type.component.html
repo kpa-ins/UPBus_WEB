@@ -17,43 +17,33 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+          <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (rowDataBound)='rowDataBound($event)' (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
               <e-column field='tripCode' headerText='Trip Code' [isPrimaryKey]="true" width="70"></e-column>
               <e-column field='tripName' headerText="Trip Name" width="120" minWidth="120"></e-column>
               <e-column field='trpType' headerText="Trip Type" width="120" minWidth="120"></e-column>
-              <e-column field="active" headerText="Is Use?" width="70" minWidth="70">
+              <e-column field="active" headerText="Active" width="70" minWidth="70">
                 <ng-template #template let-data>
-                  <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
-                    {{ data.active ? 'Yes' : 'No' }}
-                  </span>
+                  <span >{{ data.active ? 'Yes' : 'No' }} </span>
                 </ng-template>
-              </e-column>              <!-- <e-column field='createdDate' headerText='Created Date' type="date" format="dd-MM-yyyy" width="130"></e-column> -->
+              </e-column>
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <div [formGroup]="tripTypeForm">
 
                 <div class="row">
-                  <div class="form-group col-md-6">
+                  <!-- <div class="form-group col-md-6">
                     <div class="e-float-input e-control-wrapper">
-                      <input
-                        formControlName="tripCode"
-                        id="tripCode"
-                        type="text"
-                        maxlength="7"
-                        oninput="this.value = this.value.toUpperCase()"
-                        autocomplete="off"
-                        [readonly]="isEditMode"
-                      >
+                      <input formControlName="tripCode"  id="tripCode" type="text" maxlength="7" autocomplete="off" [readonly]="!data.isAdd ? true : false">
+                      <input formControlName="tripCode" id="tripCode" type="text" maxlength="7" oninput="this.value = this.value.toUpperCase()" autocomplete="off" [readonly]="isEditMode">
                       <span class="e-float-line"></span>
                       <label class="e-float-text e-label-top required" for="tripCode">Trip Code</label>
                     </div>
                     <div [style.visibility]='validateControl("tripCode") ? "visible" : "hidden"'>
                       <label class="e-error" for="tripCode" style="display: block;">*Trip Code is required</label>
                     </div>
-                  </div>
-
-                  <div class="form-group col-md-6">
+                  </div> -->
+                  <div class="form-group">
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="tripName" id="tripName" type="text" maxlength="50"  autocomplete="off">
                       <span class="e-float-line"></span>
@@ -62,20 +52,24 @@
                     <div [style.visibility]='validateControl("tripName")? "visible": "hidden"'>
                         <label class="e-error" for="tripName" style="display: block;">*Trip Name is required</label>
                     </div>
-                  </div>
+                  </div> 
                 </div>
+
                 <div class="row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group">
                     <ejs-dropdownlist formControlName="trpType" [dataSource]='tripTypeList'  placeholder="Select Trip type"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("trpType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Trip Type is required</label>
                     </div>
                   </div>
-                  <div class="form-group col-md-6 active mt-4" >
+                </div>
+                
+                <div class="row">
+                  <div class="form-group col-md-6 active mt-2" >
                       <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
                   </div>
-
                 </div>
+
               </div>
             </ng-template>
           </ejs-grid>

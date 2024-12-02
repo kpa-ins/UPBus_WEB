@@ -17,15 +17,13 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+          <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (rowDataBound)='rowDataBound($event)' (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
               <e-column field='gateCode' headerText='Gate Code' [isPrimaryKey]="true" width="70"></e-column>
               <e-column field='gateName' headerText="Gate Name" width="120" minWidth="120"></e-column>
-              <e-column field="active" headerText="Is Use?" width="70" minWidth="70">
+              <e-column field="active" headerText="Active" width="70" minWidth="70">
                 <ng-template #template let-data>
-                  <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
-                    {{ data.active ? 'Yes' : 'No' }}
-                  </span>
+                 <span>{{ data.active ? 'Yes' : 'No' }}</span>
                 </ng-template>
               </e-column>
             </e-columns>
@@ -34,7 +32,7 @@
 
                 <div class="row">
                   <!-- Gate Code Field -->
-                  <div class="form-group col-md-6">
+                  <div class="form-group">
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="gateCode" id="gateCode" type="text" maxlength="7" oninput="this.value = this.value.toUpperCase()" autocomplete="off" [readonly]="isEditMode">
                       <span class="e-float-line"></span>
@@ -46,7 +44,7 @@
                   </div>
 
                   <!-- Gate Name Field -->
-                  <div class="form-group col-md-6">
+                  <div class="form-group">
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="gateName" id="gateName" type="text" maxlength="50" autocomplete="off">
                       <span class="e-float-line"></span>

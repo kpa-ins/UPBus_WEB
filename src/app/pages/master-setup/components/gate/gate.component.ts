@@ -38,7 +38,6 @@ export class GateComponent {
   isEditMode: boolean = false;
 
   gateForm: any;
-  //ownerList: any[] = ["UP", "Other"];
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -59,7 +58,15 @@ export class GateComponent {
       .subscribe((result) => {
         this.grid.dataSource  = result;
         this.spinner.hide();
+        console.log(result)
     });
+  }
+
+  rowDataBound(args): void {
+    let data = args.data['active'];
+    if (data === false) {
+        args.row.classList.add('active');
+    }
   }
 
   actionBegin(args: SaveEventArgs): void {
@@ -104,7 +111,7 @@ export class GateComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 400;
+      args.dialog.width = 500;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
@@ -146,6 +153,7 @@ export class GateComponent {
         } else {
           this.spinner.hide();
           Swal.fire('Gate', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -162,6 +170,7 @@ export class GateComponent {
         } else {
           this.spinner.hide();
           Swal.fire('Gate', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -188,6 +197,7 @@ export class GateComponent {
             } else {
               this.spinner.hide();
               Swal.fire('Gate', result.messageContent, 'error');
+              this.loadTableData();
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -203,7 +213,6 @@ export class GateComponent {
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    // Swal.fire('Operator', msg, 'success');
     this.toastr.success(msg, 'Gate', {
       timeOut: 2000,
     });
@@ -215,8 +224,9 @@ export class GateComponent {
   }
 
   toolbarClick(args: ClickEventArgs): void {
-    if(args.item.text === 'Excel Export'){
-      this.grid.excelExport();
+    if(args.item.text === 'Excel Export') {
+      this.grid.excelExport({
+        fileName:'Gate.xlsx'});
     }
   }
 

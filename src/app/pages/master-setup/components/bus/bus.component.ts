@@ -8,7 +8,7 @@ import { Browser } from '@syncfusion/ej2-base';
 import { Dialog } from '@syncfusion/ej2-angular-popups';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { ClickEventArgs } from '@syncfusion/ej2/navigations'
 import { ToastrService } from 'ngx-toastr';
 import { TextBoxModule } from '@syncfusion/ej2-angular-inputs';
@@ -25,7 +25,7 @@ import { BusService } from './bus.service';
     GridModule,
     TextBoxModule,
     DropDownListAllModule,
-    CheckBoxModule
+    CheckBoxModule,
   ],
   templateUrl: './bus.component.html',
   styleUrl: './bus.component.scss'
@@ -139,6 +139,24 @@ export class BusComponent {
     });
   }
 
+  validateNumberInput(event: any): void {
+    let inputValue = event.target.value;
+    
+    // Check if input is a number and between 1 and 9
+    if (inputValue < 1 ) {
+      event.target.value = ''; // Clear invalid input
+    }
+  }
+
+
+  rowDataBound(args): void {
+    let data = args.data['active'];
+    if (data === false) {
+        args.row.classList.add('active');
+    }
+  }
+  
+
   createBus(formData: any) {
     this.spinner.show();
     this.service
@@ -151,6 +169,7 @@ export class BusComponent {
         } else {
           this.spinner.hide();
           Swal.fire('Bus', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -167,6 +186,7 @@ export class BusComponent {
         } else {
           this.spinner.hide();
           Swal.fire('Bus', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -193,6 +213,7 @@ export class BusComponent {
             } else {
               this.spinner.hide();
               Swal.fire('Bus', result.messageContent, 'error');
+              this.loadTableData();
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -208,7 +229,6 @@ export class BusComponent {
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    // Swal.fire('Operator', msg, 'success');
     this.toastr.success(msg, 'Bus', {
       timeOut: 2000,
     });
@@ -220,8 +240,9 @@ export class BusComponent {
   }
 
   toolbarClick(args: ClickEventArgs): void {
-    if(args.item.text === 'Excel Export'){
-      this.grid.excelExport();
+    if(args.item.text === 'Excel Export') {
+      this.grid.excelExport({
+        fileName:'Bus.xlsx'});
     }
   }
 

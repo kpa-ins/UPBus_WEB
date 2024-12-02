@@ -16,6 +16,8 @@ import { DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { DailyPlanService } from './daily-plan.service';
 import { DatePickerModule, DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { CommonModule } from '@angular/common';
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-daily-plan',
   standalone: true,
@@ -86,7 +88,6 @@ export class DailyPlanComponent {
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
-        console.log(result);
         this.spinner.hide();
     });
   }
@@ -95,8 +96,9 @@ export class DailyPlanComponent {
     if (busNo) {
       this.service.getDriverByBusNo(busNo).subscribe((result: any) => {
         if (result && result.driverName) {
-          this.dailyPlanForm.patchValue({ driverName: result.driverName });
-          this.dailyPlanForm.get('driverName')?.enable(); // Enable the driverName field
+          this.dailyPlanForm.controls['driverName'].setValue(result.driverName);
+          //this.dailyPlanForm.patchValue({ driverName: result.driverName });
+          //this.dailyPlanForm.get('driverName')?.enable(); // Enable the driverName field
         } else {
           this.dailyPlanForm.patchValue({ driverName: '' });
           this.dailyPlanForm.get('driverName')?.disable(); // Disable the driverName field if no driver is found
@@ -126,11 +128,11 @@ export class DailyPlanComponent {
         if (this.dailyPlanForm.valid) {
             let formData = this.dailyPlanForm.value;
             if (args.action === 'add') {
-              //formData.tripDate = moment(formData.tripDate).format('dd-MMM-yyyy');
+              formData.tripDate = moment(formData.tripDate).format('MM/DD/YYYY hh:mm:ss');
               this.createDailyPlan(formData);
             }
             else {
-              //formData.tripDate = moment(formData.tripDate).format('dd-MMM-yyyy');
+              formData.tripDate = moment(formData.tripDate).format('MM/DD/YYYY hh:mm:ss');
 
               this.updateDailyPlan(formData);
             }
@@ -149,8 +151,6 @@ export class DailyPlanComponent {
   }
 
   createDailyPlan(formData: any) {
-    const formattedDate = this.formatDate(formData.tripDate);
-    formData.tripDate = formattedDate; // Replace tripDate with formatted date
     this.spinner.show();
     this.service
       .saveDailyPlan(formData)
@@ -162,19 +162,13 @@ export class DailyPlanComponent {
           this.showSuccess(result.messageContent);
         } else {
           Swal.fire('Error', result.messageContent, 'error');
+          this.loadTableData(); 
         }
       });
   }
 
-  formatDate(date: any): string {
-    if (!date) return ''; // Handle empty date
-    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };
-    return new Intl.DateTimeFormat('en-GB', options).format(new Date(date)); // Example: '25-Nov-2024'
-  }
 
   updateDailyPlan(formData: any) {
-    const formattedDate = this.formatDate(formData.tripDate);
-    formData.tripDate = formattedDate; // Replace tripDate with formatted date
     this.spinner.show();
     this.service
       .updateDailyPlan(formData)  // Pass the updated formData here
@@ -186,6 +180,7 @@ export class DailyPlanComponent {
           this.showSuccess(result.messageContent);  // Show success message
         } else {
           Swal.fire('Error', result.messageContent, 'error'); // Show error if updating fails
+          this.loadTableData(); 
         }
       });
   }
@@ -198,9 +193,6 @@ export class DailyPlanComponent {
             (<Dialog>args.dialog).dataBind();
         }
 
-        // if (args.requestType === 'beginEdit') {
-        //   (args.form.elements.namedItem('operatorName') as HTMLInputElement).focus();
-        // }
         const dialog = args.dialog;
         dialog.header = args.requestType === 'beginEdit' ? 'Edit Daily Plan': 'Add New Daily Plan';
     }
@@ -211,7 +203,7 @@ export class DailyPlanComponent {
       tripCode: new FormControl('', Validators.required),
       busNo: new FormControl('', Validators.required),
       driverName: new FormControl('', Validators.required),
-      tripDate: new FormControl('', Validators.required),
+      tripDate: new FormControl(new Date(), Validators.required),
       tripTime: new FormControl('', Validators.required),
       track: new FormControl('', Validators.required)
     });
@@ -229,12 +221,9 @@ export class DailyPlanComponent {
     });
   }
 
-  // formatDate(date: any): string {
-  //   return date ? new Date(date).toLocaleDateString().split('T')[0] : ''; // Format as YYYY-MM-DD
-  // }
+
 
   deleteDailyPlan(id: any) {
-    console.log('Delete triggered for ID:', id);
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this data!',
@@ -271,7 +260,6 @@ export class DailyPlanComponent {
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    // Swal.fire('Operator', msg, 'success');
     this.toastr.success(msg, 'DailyPlan', {
       timeOut: 2000,
     });
@@ -283,8 +271,9 @@ export class DailyPlanComponent {
   }
 
   toolbarClick(args: ClickEventArgs): void {
-    if(args.item.text === 'Excel Export'){
-      this.grid.excelExport();
+    if(args.item.text === 'Excel Export') {
+      this.grid.excelExport({
+        fileName:'DailyPlan.xlsx'});
     }
   }
 
@@ -297,8 +286,5 @@ export class DailyPlanComponent {
     }
   }
 
-}
-function moment(tripDate: any) {
-  throw new Error('Function not implemented.');
 }
 

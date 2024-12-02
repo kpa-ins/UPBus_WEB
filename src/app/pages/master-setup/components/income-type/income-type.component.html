@@ -17,16 +17,14 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+          <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (rowDataBound)='rowDataBound($event)' (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
               <e-column field='incCode' headerText='Income Code' [isPrimaryKey]="true" width="100"></e-column>
               <e-column field='incName' headerText="Income Name" width="120" minWidth="120"></e-column>
               <e-column field='incType' headerText="Income Type" width="120" minWidth="120"></e-column>
               <e-column field="active" headerText="Is Use?" width="70" minWidth="70">
                 <ng-template #template let-data>
-                  <span [ngClass]="data.active ? 'text-success' : 'text-dark'">
-                    {{ data.active ? 'Yes' : 'No' }}
-                  </span>
+                  <span >{{ data.active ? 'Yes' : 'No' }}</span>
                 </ng-template>
               </e-column>
             </e-columns>
@@ -34,7 +32,7 @@
               <div [formGroup]="incomeTypeForm">
 
                 <div class="row">
-                  <div class="form-group col-md-6">
+                  <!-- <div class="form-group col-md-6">
                     <div class="e-float-input e-control-wrapper">
                       <input
                         formControlName="incCode"
@@ -51,9 +49,9 @@
                     <div [style.visibility]='validateControl("incCode") ? "visible" : "hidden"'>
                       <label class="e-error" for="incCode" style="display: block;">*Income Code is required</label>
                     </div>
-                  </div>
+                  </div> -->
 
-                  <div class="form-group col-md-6">
+                  <div class="form-group">
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="incName" id="incName" type="text" maxlength="50"  autocomplete="off">
                       <span class="e-float-line"></span>
@@ -65,16 +63,17 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group">
                     <ejs-dropdownlist formControlName="incType" [dataSource]='incomeTypeList'  placeholder="Select Income Type"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("incType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Income type is required</label>
                     </div>
                   </div>
-                  <div class="form-group col-md-6 active mt-4" >
-                      <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
-                  </div>
-
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6 active mt-2" >
+                    <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
+                </div>
                 </div>
               </div>
             </ng-template>

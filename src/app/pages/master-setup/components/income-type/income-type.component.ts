@@ -62,6 +62,13 @@ export class IncomeTypeComponent {
     });
   }
 
+  rowDataBound(args): void {
+    let data = args.data['active'];
+    if (data === false) {
+        args.row.classList.add('active');
+    }
+  }
+
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
@@ -82,6 +89,7 @@ export class IncomeTypeComponent {
         if (this.incomeTypeForm.valid) {
             let formData = this.incomeTypeForm.value;
             if (args.action === 'add') {
+              formData.incCode = "";
               this.createIncomeTypes(formData);
             }
             else {
@@ -104,15 +112,12 @@ export class IncomeTypeComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 700;
+      args.dialog.width = 500;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
         }
 
-        // if (args.requestType === 'beginEdit') {
-        //   (args.form.elements.namedItem('operatorName') as HTMLInputElement).focus();
-        // }
         const dialog = args.dialog;
         dialog.header = args.requestType === 'beginEdit' ? 'Edit Income Type': 'Add New Income Type';
     }
@@ -120,7 +125,6 @@ export class IncomeTypeComponent {
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      incCode: new FormControl('', Validators.required),
       incName: new FormControl('', Validators.required),
       incType: new FormControl('', Validators.required),
       active: new FormControl(true, Validators.required),
@@ -129,7 +133,7 @@ export class IncomeTypeComponent {
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
-      incCode: new FormControl(data.incCode, Validators.required),
+      incCode: new FormControl(data.incCode),
       incName: new FormControl(data.incName, Validators.required),
       incType: new FormControl(data.incType, Validators.required),
       active: new FormControl(data.active, Validators.required),
@@ -147,7 +151,8 @@ export class IncomeTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Income_Type', result.messageContent, 'error');
+          Swal.fire('Income Type', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -163,7 +168,8 @@ export class IncomeTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Income_Type', result.messageContent, 'error');
+          Swal.fire('Income Type', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -189,7 +195,8 @@ export class IncomeTypeComponent {
               this.loadTableData();
             } else {
               this.spinner.hide();
-              Swal.fire('Income_Type', result.messageContent, 'error');
+              Swal.fire('Income Type', result.messageContent, 'error');
+              this.loadTableData();
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -217,8 +224,9 @@ export class IncomeTypeComponent {
   }
 
   toolbarClick(args: ClickEventArgs): void {
-    if(args.item.text === 'Excel Export'){
-      this.grid.excelExport();
+    if(args.item.text === 'Excel Export') {
+      this.grid.excelExport({
+        fileName:'IncomeType.xlsx'});
     }
   }
 

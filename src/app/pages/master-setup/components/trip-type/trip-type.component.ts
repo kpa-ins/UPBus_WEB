@@ -61,6 +61,13 @@ export class TripTypeComponent {
     });
   }
 
+  rowDataBound(args): void {
+    let data = args.data['active'];
+    if (data === false) {
+        args.row.classList.add('active');
+    }
+  }
+
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
@@ -81,6 +88,7 @@ export class TripTypeComponent {
         if (this.tripTypeForm.valid) {
             let formData = this.tripTypeForm.value;
             if (args.action === 'add') {
+              formData.tripCode = "";
               this.createTripTypes(formData);
             }
             else {
@@ -103,7 +111,7 @@ export class TripTypeComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 700;
+      args.dialog.width = 500;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
@@ -113,13 +121,12 @@ export class TripTypeComponent {
         //   (args.form.elements.namedItem('operatorName') as HTMLInputElement).focus();
         // }
         const dialog = args.dialog;
-        dialog.header = args.requestType === 'beginEdit' ? 'Edit Trip type': 'Add New Trip Type';
+        dialog.header = args.requestType === 'beginEdit' ? 'Edit Trip Type': 'Add New Trip Type';
     }
   }
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      tripCode: new FormControl('', Validators.required),
       tripName: new FormControl('', Validators.required),
       trpType: new FormControl('', Validators.required),
       active: new FormControl(true, Validators.required),
@@ -128,7 +135,7 @@ export class TripTypeComponent {
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
-      tripCode: new FormControl(data.tripCode, Validators.required),
+      tripCode: new FormControl(data.tripCode),
       tripName: new FormControl(data.tripName, Validators.required),
       trpType: new FormControl(data.trpType, Validators.required),
       active: new FormControl(data.active, Validators.required),
@@ -146,7 +153,8 @@ export class TripTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Trip_Type', result.messageContent, 'error');
+          Swal.fire('Trip Type', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -162,7 +170,8 @@ export class TripTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Trip_Type', result.messageContent, 'error');
+          Swal.fire('Trip Type', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -188,7 +197,8 @@ export class TripTypeComponent {
               this.loadTableData();
             } else {
               this.spinner.hide();
-              Swal.fire('Trip_Type', result.messageContent, 'error');
+              Swal.fire('Trip Type', result.messageContent, 'error');
+              this.loadTableData();
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -204,20 +214,20 @@ export class TripTypeComponent {
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    // Swal.fire('Operator', msg, 'success');
-    this.toastr.success(msg, 'TripType', {
+    this.toastr.success(msg, 'Trip Type', {
       timeOut: 2000,
     });
   }
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Trip_Type', error.toString(), 'error');
+    Swal.fire('Trip Type', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {
-    if(args.item.text === 'Excel Export'){
-      this.grid.excelExport();
+    if(args.item.text === 'Excel Export') {
+      this.grid.excelExport({
+        fileName:'TripType.xlsx'});
     }
   }
 

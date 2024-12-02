@@ -62,6 +62,13 @@ export class ExpenseTypeComponent {
     });
   }
 
+  rowDataBound(args): void {
+    let data = args.data['active'];
+    if (data === false) {
+        args.row.classList.add('active');
+    }
+  }
+
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
@@ -82,6 +89,7 @@ export class ExpenseTypeComponent {
         if (this.expenseTypeForm.valid) {
             let formData = this.expenseTypeForm.value;
             if (args.action === 'add') {
+              formData.expCode = "";
               this.createExpenseTypes(formData);
             }
             else {
@@ -104,15 +112,11 @@ export class ExpenseTypeComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 700;
+      args.dialog.width = 500;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
         }
-
-        // if (args.requestType === 'beginEdit') {
-        //   (args.form.elements.namedItem('operatorName') as HTMLInputElement).focus();
-        // }
         const dialog = args.dialog;
         dialog.header = args.requestType === 'beginEdit' ? 'Edit Expense Type': 'Add New Expense Type';
     }
@@ -120,7 +124,6 @@ export class ExpenseTypeComponent {
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      expCode: new FormControl('', Validators.required),
       expName: new FormControl('', Validators.required),
       expType: new FormControl('', Validators.required),
       active: new FormControl(true, Validators.required),
@@ -129,7 +132,7 @@ export class ExpenseTypeComponent {
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
-      expCode: new FormControl(data.expCode, Validators.required),
+      expCode: new FormControl(data.expCode),
       expName: new FormControl(data.expName, Validators.required),
       expType: new FormControl(data.expType, Validators.required),
       active: new FormControl(data.active, Validators.required),
@@ -148,6 +151,7 @@ export class ExpenseTypeComponent {
         } else {
           this.spinner.hide();
           Swal.fire('Expense_Type', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -164,6 +168,7 @@ export class ExpenseTypeComponent {
         } else {
           this.spinner.hide();
           Swal.fire('Expense_Type', result.messageContent, 'error');
+          this.loadTableData();
         }
       });
   }
@@ -190,6 +195,7 @@ export class ExpenseTypeComponent {
             } else {
               this.spinner.hide();
               Swal.fire('Expense_Type', result.messageContent, 'error');
+              this.loadTableData();
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -205,7 +211,6 @@ export class ExpenseTypeComponent {
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    // Swal.fire('Operator', msg, 'success');
     this.toastr.success(msg, 'ExpenseType', {
       timeOut: 2000,
     });
@@ -213,12 +218,13 @@ export class ExpenseTypeComponent {
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Expense_Type', error.toString(), 'error');
+    Swal.fire('Expense Type', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {
-    if(args.item.text === 'Excel Export'){
-      this.grid.excelExport();
+    if(args.item.text === 'Excel Export') {
+      this.grid.excelExport({
+        fileName:'ExpenseType.xlsx'});
     }
   }
 

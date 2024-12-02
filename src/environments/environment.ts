@@ -15,8 +15,8 @@ export const environment = {
     appId: "",
     measurementId: ""
   },
-   //baseUrl: "https://localhost:7271"
-   baseUrl: "http://localhost:5138"
+   baseUrl: "https://localhost:7271"
+   //baseUrl: "http://localhost:5138"
 };
 
 /*
