@@ -1,0 +1,71 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">Track Type</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Master Setup</a></li>
+              <li class="breadcrumb-item active">Track Type</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (rowDataBound)='rowDataBound($event)' (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+              <e-columns>
+                <e-column field='tripCode' headerText='Trip Code' [isPrimaryKey]="true" width="70"></e-column>
+                <e-column field='tripType' headerText="Trip Type" width="120" minWidth="120"></e-column>
+                <e-column field="active" headerText="Active" width="70" minWidth="70">
+                  <ng-template #template let-data>
+                    <span >{{ data.active ? 'Yes' : 'No' }} </span>
+                  </ng-template>
+                </e-column>
+              </e-columns>
+              <ng-template #editSettingsTemplate let-data>
+                <div [formGroup]="trackTypeForm">
+
+                    <div class="row">
+                      <div class="form-group">
+                        <div class="e-float-input e-control-wrapper">
+                          <input formControlName="tripCode" id="tripCode" type="text" maxlength="15" oninput="this.value = this.value.toUpperCase()" autocomplete="off" [readonly]="isEditMode">
+                          <span class="e-float-line"></span>
+                          <label class="e-float-text e-label-top required" for="tripCode">Trip Code</label>
+                        </div>
+                        <div [style.visibility]='validateControl("tripCode") ? "visible" : "hidden"'>
+                          <label class="e-error" for="tripCode" style="display: block;">*Trip Code is required</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <ejs-dropdownlist formControlName="tripType" [dataSource]='tripTypeList'  placeholder="Track Type"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
+                            <div [style.visibility]='validateControl("tripType")? "visible": "hidden"'>
+                              <label class="e-error" style="display: block;">*Track type is required</label>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                      <div class="form-group">
+                        <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
+                      </div>
+                    </div>
+    
+                  </div>
+              </ng-template>
+            </ejs-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  

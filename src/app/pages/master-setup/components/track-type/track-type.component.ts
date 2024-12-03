@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GridModule,DialogEditEventArgs, EditSettingsModel, ExcelQueryCellInfoEventArgs, GridComponent, GridLine, PageSettingsModel, SaveEventArgs, ToolbarItems } from '@syncfusion/ej2-angular-grids';
+import { GridModule,DialogEditEventArgs, EditSettingsModel, ExcelQueryCellInfoEventArgs, GridComponent, GridLine, PageSettingsModel, SaveEventArgs, ToolbarItems, filterDialogClose } from '@syncfusion/ej2-angular-grids';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, of } from 'rxjs';
 import { Browser } from '@syncfusion/ej2-base';
@@ -14,9 +14,9 @@ import { ToastrService } from 'ngx-toastr';
 import { TextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { CheckBoxModule } from '@syncfusion/ej2-angular-buttons';
-import { TripTypeService } from './trip-type.service';
+import { TrackTypeService } from './track-type.service';
 @Component({
-  selector: 'app-trip-type',
+  selector: 'app-track-type',
   standalone: true,
   imports: [
     FormsModule,
@@ -27,22 +27,22 @@ import { TripTypeService } from './trip-type.service';
     DropDownListAllModule,
     CheckBoxModule
   ],
-  templateUrl: './trip-type.component.html',
-  styleUrl: './trip-type.component.scss'
+  templateUrl: './track-type.component.html',
+  styleUrl: './track-type.component.scss'
 })
-export class TripTypeComponent {
+export class TrackTypeComponent {
   pageSettings: PageSettingsModel = { pageSize: 10 };
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
   isEditMode: boolean = false;
-  tripTypeForm: any;
+  trackTypeForm: any;
   tripTypeList: any[] = ["UP", "DOWN"];
 
   @ViewChild('Grid') public grid: GridComponent;
 
   constructor(
-    private service: TripTypeService,
+    private service: TrackTypeService,
     private spinner: NgxSpinnerService,
     public toastr:ToastrService
   ) {}
@@ -53,7 +53,7 @@ export class TripTypeComponent {
 
   loadTableData() {
     this.spinner.show();
-    this.service.getTripTypeList()
+    this.service.getTrackTypeList()
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
@@ -72,27 +72,26 @@ export class TripTypeComponent {
     if (args.requestType === 'add') {
         this.submitClicked = false;
         this.isEditMode = false;
-        this.tripTypeForm = this.createFormGroup(args.rowData);
+        this.trackTypeForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
       this.isEditMode = true;
-      this.tripTypeForm = this.updateFormGroup(args.rowData);
+      this.trackTypeForm = this.updateFormGroup(args.rowData);
       return;
   }
 
     if (args.requestType === 'save') {
         this.submitClicked = true;
-        if (this.tripTypeForm.valid) {
-            let formData = this.tripTypeForm.value;
+        if (this.trackTypeForm.valid) {
+            let formData = this.trackTypeForm.value;
             if (args.action === 'add') {
-              formData.tripCode = "";
-              this.createTripTypes(formData);
+              this.createTrackTypes(formData);
             }
             else {
-              this.updateTripTypes(formData);
+              this.updateTrackTypes(formData);
             }
         } else {
             args.cancel = true;
@@ -121,31 +120,30 @@ export class TripTypeComponent {
         //   (args.form.elements.namedItem('operatorName') as HTMLInputElement).focus();
         // }
         const dialog = args.dialog;
-        dialog.header = args.requestType === 'beginEdit' ? 'Edit Trip Type': 'Add New Trip Type';
+        dialog.header = args.requestType === 'beginEdit' ? 'Edit Track Type': 'Add New Track Type';
     }
   }
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      tripName: new FormControl('', Validators.required),
-      trpType: new FormControl('', Validators.required),
+      tripCode: new FormControl('', Validators.required),
+      tripType: new FormControl('', Validators.required),
       active: new FormControl(true, Validators.required),
     });
   }
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
-      tripCode: new FormControl(data.tripCode),
-      tripName: new FormControl(data.tripName, Validators.required),
-      trpType: new FormControl(data.trpType, Validators.required),
+      tripCode: new FormControl(data.tripCode, Validators.required),
+      tripType: new FormControl(data.tripType, Validators.required),
       active: new FormControl(data.active, Validators.required),
     });
   }
 
-  createTripTypes(formData: any) {
+  createTrackTypes(formData: any) {
     this.spinner.show();
     this.service
-      .saveTripType(formData)
+      .saveTrackType(formData)
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.loadTableData();
@@ -153,16 +151,16 @@ export class TripTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Trip Type', result.messageContent, 'error');
+          Swal.fire('Track Type', result.messageContent, 'error');
           this.loadTableData();
         }
       });
   }
 
-  updateTripTypes(formData: any) {
+  updateTrackTypes(formData: any) {
     this.spinner.show();
     this.service
-      .updateTripType(formData)
+      .updateTrackType(formData)
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result.status == true) {
@@ -170,7 +168,7 @@ export class TripTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Trip Type', result.messageContent, 'error');
+          Swal.fire('Track Type', result.messageContent, 'error');
           this.loadTableData();
         }
       });
@@ -189,7 +187,7 @@ export class TripTypeComponent {
       if (response.value) {
         this.spinner.show();
         this.service
-          .deleteTripType(id)
+          .deleteTrackType(id)
           .pipe(catchError((err) => of(this.showError(err))))
           .subscribe((result) => {
             if (result.status == true) {
@@ -197,7 +195,7 @@ export class TripTypeComponent {
               this.loadTableData();
             } else {
               this.spinner.hide();
-              Swal.fire('Trip Type', result.messageContent, 'error');
+              Swal.fire('Track Type', result.messageContent, 'error');
               this.loadTableData();
             }
           });
@@ -208,26 +206,26 @@ export class TripTypeComponent {
   }
 
   validateControl(controlName: string) {
-    const control = this.tripTypeForm.get(controlName);
+    const control = this.trackTypeForm.get(controlName);
     return (control.invalid && (control.dirty || control.touched)) || (control.invalid && this.submitClicked);
   }
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    this.toastr.success(msg, 'Trip Type', {
+    this.toastr.success(msg, 'Track Type', {
       timeOut: 2000,
     });
   }
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Trip Type', error.toString(), 'error');
+    Swal.fire('Track Type', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {
     if(args.item.text === 'Excel Export') {
       this.grid.excelExport({
-        fileName:'TripType.xlsx'});
+        fileName:'TrackType.xlsx'});
     }
   }
 

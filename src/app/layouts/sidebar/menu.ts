@@ -28,8 +28,8 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 5,
-                label: 'Trip Type',
-                link: '/master-setup/trip-type',
+                label: 'Track Type',
+                link: '/master-setup/track-type',
                 parentId: 2
             },
             {

@@ -31,26 +31,17 @@
             <ng-template #editSettingsTemplate let-data>
               <div [formGroup]="incomeTypeForm">
 
-                <div class="row">
-                  <!-- <div class="form-group col-md-6">
+                <!-- <div class="row" *ngIf="isShow">
+                  <div class="form-group" >
                     <div class="e-float-input e-control-wrapper">
-                      <input
-                        formControlName="incCode"
-                        id="incCode"
-                        type="text"
-                        maxlength="7"
-                        oninput="this.value = this.value.toUpperCase()"
-                        autocomplete="off"
-                        [readonly]="isEditMode"
-                      >
+                      <input formControlName="incCode" id="incCode" type="text" autocomplete="off" readonly="true">
                       <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top required" for="incCode">Income Code</label>
+                      <label class="e-float-text e-label-top" for="incCode">Inc Code</label>
                     </div>
-                    <div [style.visibility]='validateControl("incCode") ? "visible" : "hidden"'>
-                      <label class="e-error" for="incCode" style="display: block;">*Income Code is required</label>
-                    </div>
-                  </div> -->
+                  </div>
+                </div> -->
 
+                <div class="row">
                   <div class="form-group">
                     <div class="e-float-input e-control-wrapper">
                       <input formControlName="incName" id="incName" type="text" maxlength="50"  autocomplete="off">
@@ -64,7 +55,7 @@
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <ejs-dropdownlist formControlName="incType" [dataSource]='incomeTypeList'  placeholder="Select Income Type"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="incType" [dataSource]='incomeTypeList'  placeholder="Income Type"  popupHeight='200px' floatLabelType='Always' [readonly]="isEditMode"></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("incType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Income type is required</label>
                     </div>

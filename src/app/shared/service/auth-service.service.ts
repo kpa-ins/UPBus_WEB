@@ -53,7 +53,6 @@ export class AuthService {
   }
 
   loginUser (body: UserForAuthenticationDto) {
-    console.log(environment.baseUrl);
     return this.http.post<AuthResponseDto>(`${environment.baseUrl}/api/Account/Login`, body);
   }
 

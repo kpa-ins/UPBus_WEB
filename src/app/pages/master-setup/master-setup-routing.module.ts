@@ -7,7 +7,7 @@ import { GateComponent } from './components/gate/gate.component';
 import { DailyPlanComponent } from './components/daily-plan/daily-plan.component';
 import { ExpenseTypeComponent } from './components/expense-type/expense-type.component';
 import { IncomeTypeComponent } from './components/income-type/income-type.component';
-import { TripTypeComponent } from './components/trip-type/trip-type.component';
+import { TrackTypeComponent } from './components/track-type/track-type.component';
 
 
 const routes: Routes = [
@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'daily-plan', component: DailyPlanComponent },
   { path: 'expense-type', component: ExpenseTypeComponent },
   { path: 'income-type', component: IncomeTypeComponent },
-  { path: 'trip-type', component: TripTypeComponent },
+  { path: 'track-type', component: TrackTypeComponent },
 
 ];
 

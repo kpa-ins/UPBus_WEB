@@ -150,7 +150,7 @@ export class ExpenseTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Expense_Type', result.messageContent, 'error');
+          Swal.fire('Expense Type', result.messageContent, 'error');
           this.loadTableData();
         }
       });
@@ -167,7 +167,7 @@ export class ExpenseTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Expense_Type', result.messageContent, 'error');
+          Swal.fire('Expense Type', result.messageContent, 'error');
           this.loadTableData();
         }
       });
@@ -194,7 +194,7 @@ export class ExpenseTypeComponent {
               this.loadTableData();
             } else {
               this.spinner.hide();
-              Swal.fire('Expense_Type', result.messageContent, 'error');
+              Swal.fire('Expense Type', result.messageContent, 'error');
               this.loadTableData();
             }
           });

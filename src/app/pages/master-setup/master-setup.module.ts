@@ -31,9 +31,6 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { PagetitleComponent } from 'src/app/shared/ui/pagetitle/pagetitle.component';
-import { HttpClientModule } from '@angular/common/http';
-
-
 
 @NgModule({
   declarations: [

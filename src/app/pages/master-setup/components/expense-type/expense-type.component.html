@@ -64,7 +64,7 @@
                 </div>
                 <div class="row">
                   <div class="form-group">
-                    <ejs-dropdownlist formControlName="expType" [dataSource]='expenseTypeList'  placeholder="Select Expense Type"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="expType" [dataSource]='expenseTypeList'  placeholder="Expense Type"  popupHeight='200px' [readonly]="isEditMode" floatLabelType='Always'></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("expType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Expense type is required</label>
                     </div>

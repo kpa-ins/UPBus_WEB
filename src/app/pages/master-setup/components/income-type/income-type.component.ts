@@ -36,6 +36,7 @@ export class IncomeTypeComponent {
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
   isEditMode: boolean = false;
+  isShow: boolean = false;
 
   incomeTypeForm: any;
   incomeTypeList: any[] = ["GATE", "BUS","TRIP"];
@@ -80,6 +81,7 @@ export class IncomeTypeComponent {
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
       this.isEditMode = true;
+      this.isShow = true;
       this.incomeTypeForm = this.updateFormGroup(args.rowData);
       return;
   }
@@ -220,7 +222,7 @@ export class IncomeTypeComponent {
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Income_Type', error.toString(), 'error');
+    Swal.fire('Income Type', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {
