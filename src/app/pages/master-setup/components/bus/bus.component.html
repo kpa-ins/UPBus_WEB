@@ -57,21 +57,18 @@
                 </div>
 
                 <div class="row">
-                  <div class="form-group col-md-6">
-                    <div class="e-float-input e-control-wrapper">
-                      <input formControlName="noOfSeat" id="noOfSeat" (input)="validateNumberInput($event)" min="1" type="number"  autocomplete="off">
-                      <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top required" for="noOfSeat">No Of Seat</label>
-                    </div>
-                     <div [style.visibility]='validateControl("noOfSeat")? "visible": "hidden"'>
-                        <label class="e-error" for="noOfSeat" style="display: block;">*No Of Seat is required</label>
+
+                  <div class="form-group col-md-6" >
+                    <ejs-numerictextbox formControlName="noOfSeat" format='#' [validateDecimalOnType]='true' min='1' (input)="validateNumberInput($event)" placeholder="No Of Seat" floatLabelType='Always' ></ejs-numerictextbox>
+                    <div [style.visibility]='validateControl("noOfSeat")? "visible": "hidden"'>
+                      <label class="e-error" style="display: block;">*No Of Seat is required</label>
                     </div>
                   </div>
 
                   <div class="form-group col-md-6">
                     <ejs-dropdownlist formControlName="owner" class="required" [dataSource]='ownerList'  placeholder="Owner"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
-                    <div *ngIf="validateControl('owner')" class="text-danger">
-                      Owner is required.
+                    <div [style.visibility]='validateControl("owner")? "visible": "hidden"'>
+                      <label class="e-error" style="display: block;">*Owner is required</label>
                     </div>
                   </div>
                 </div>
@@ -86,7 +83,6 @@
                   <div class="form-group col-md-6 active mt-4" >
                       <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>
                   </div>
-
                 </div>
               </div>
             </ng-template>

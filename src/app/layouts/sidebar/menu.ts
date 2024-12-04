@@ -44,21 +44,71 @@ export const MENU: MenuItem[] = [
                 link: '/master-setup/income-type',
                 parentId: 2
             },
+            
             {
                 id: 8,
-                label: 'Daily Plan',
-                link: '/master-setup/daily-plan',
-                parentId: 2
-            },
-            {
-                id: 9,
-                label: 'Station',
-                link: '/master-setup/station',
+                label: 'Gas Station',
+                link: '/master-setup/gas-station',
                 parentId: 2
             },
             
         ]
     },
+
+
+    {
+        id: 3,
+        label: 'Daily Acc',
+        icon: 'mdi mdi-calendar-month',
+        subItems: [
+            {
+                id: 9,
+                label: 'Daily Plan',
+                link: '/master-setup/daily-plan',
+                parentId: 3
+            },
+            {
+                id: 10,
+                label: 'Daily Gate Acc',
+                link: '/daily-acc/daily-gate-acc',
+                parentId: 3
+            },
+            {
+                id: 11,
+                label: 'Daily Gate Expense',
+                link: '/daily-acc/daily-gate-expense',
+                parentId: 3
+            },
+            {
+                id: 12,
+                label: 'Daily Gate Income',
+                link: '/daily-acc/daily-gate-income',
+                parentId: 3
+            },
+            {
+                id: 13,
+                label: 'Trip Acc',
+                link: '/daily-acc/trip-acc',
+                parentId: 3
+            },
+           
+            {
+                id: 14,
+                label: 'Trip Expense',
+                link: '/daily-acc/trip-expense',
+                parentId: 3
+            },
+
+            {
+                id: 15,
+                label: 'Trip Income',
+                link: '/daily-acc/trip-income',
+                parentId: 3
+            },
+            
+        ]
+    },
+
 
     // {
     //     id: 12,

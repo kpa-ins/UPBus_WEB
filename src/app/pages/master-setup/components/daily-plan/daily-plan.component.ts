@@ -43,10 +43,11 @@ export class DailyPlanComponent {
   submitClicked: boolean = false;
 
   dailyPlanForm: any;
-  tripCodeList: any[] = [];
   driverNameList: any[] = [];
   busList: any[] = [];
   dailyPlanList: any[] = ["မနက်", "ညနေ"];
+  trackTypeList: any[] = ["UP", "DOWN"];
+
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -58,22 +59,22 @@ export class DailyPlanComponent {
 
   ngOnInit(): void {
     this.loadTableData();
-    this.loadTripCodes();
-    this.loadBusList();
+    this.getTrackTypeList();
+    this.getBusData();
   }
 
-  loadTripCodes() {
-    this.service.getTripCodes()
+  getTrackTypeList() {
+    this.service.getTrackTypes()
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result) {
-          this.tripCodeList = result;
+          this.trackTypeList = result;
         }
       });
   }
 
-  loadBusList() {
-    this.service.getBusList()
+  getBusData() {
+    this.service.getBusData()
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result) {
@@ -93,20 +94,9 @@ export class DailyPlanComponent {
   }
 
   onBusNoChange(busNo: string) {
-    if (busNo) {
-      this.service.getDriverByBusNo(busNo).subscribe((result: any) => {
-        if (result && result.driverName) {
-          this.dailyPlanForm.controls['driverName'].setValue(result.driverName);
-          //this.dailyPlanForm.patchValue({ driverName: result.driverName });
-          //this.dailyPlanForm.get('driverName')?.enable(); // Enable the driverName field
-        } else {
-          this.dailyPlanForm.patchValue({ driverName: '' });
-          this.dailyPlanForm.get('driverName')?.disable(); // Disable the driverName field if no driver is found
-        }
-      });
-    } else {
-      this.dailyPlanForm.patchValue({ driverName: '' });
-      this.dailyPlanForm.get('driverName')?.disable(); // Disable driverName if no busNo is selected
+    if(busNo){
+      const bList = this.busList.filter(x=>x.busNo==busNo);
+      this.dailyPlanForm.controls['driverName'].setValue(bList[0].driverName);
     }
   }
 
@@ -145,7 +135,7 @@ export class DailyPlanComponent {
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const id = data[0].dailyPlanID;
+      const id = data[0].regNo;
       this.deleteDailyPlan(id);
     }
   }
@@ -200,24 +190,27 @@ export class DailyPlanComponent {
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      tripCode: new FormControl('', Validators.required),
+      trackCode: new FormControl('', Validators.required),
       busNo: new FormControl('', Validators.required),
       driverName: new FormControl('', Validators.required),
       tripDate: new FormControl(new Date(), Validators.required),
       tripTime: new FormControl('', Validators.required),
-      track: new FormControl('', Validators.required)
+      track: new FormControl('', Validators.required),
+      trackType: new FormControl('', Validators.required)
     });
   }
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
-      dailyPlanID: new FormControl(data.dailyPlanID, Validators.required),
-      tripCode: new FormControl(data.tripCode, Validators.required),
+      regNo: new FormControl(data.regNo, Validators.required),
+      trackCode: new FormControl(data.trackCode, Validators.required),
       busNo: new FormControl(data.busNo, Validators.required),
       driverName: new FormControl(data.driverName, Validators.required),
       tripDate: new FormControl(data.tripDate, Validators.required),
       tripTime: new FormControl(data.tripTime, Validators.required),
-      track: new FormControl(data.track, Validators.required)
+      track: new FormControl(data.track, Validators.required),
+      trackType: new FormControl(data.trackType, Validators.required)
+
     });
   }
 
@@ -244,7 +237,7 @@ export class DailyPlanComponent {
               this.showSuccess(result.messageContent);
               this.loadTableData();
             } else {
-              Swal.fire('Daily_Plan', result.messageContent, 'error');
+              Swal.fire('Daily Plan', result.messageContent, 'error');
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -267,7 +260,7 @@ export class DailyPlanComponent {
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Daily_Plan', error.toString(), 'error');
+    Swal.fire('Daily Plan', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {

@@ -201,6 +201,13 @@ label.required:after {
   // color: #F77E17;
 }
 
+/* Global placeholder styling */
+ejs-dropdownlist::ng-deep .e-placeholder {
+  color: #FF3740; /* Teal color for the placeholder */
+  font-size: 16px;
+}
+
+
 
 @import '../node_modules/@syncfusion/ej2-base/styles/bootstrap5.css';
 @import '../node_modules/@syncfusion/ej2-buttons/styles/bootstrap5.css';

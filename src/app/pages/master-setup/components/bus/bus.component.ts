@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { ClickEventArgs } from '@syncfusion/ej2/navigations'
 import { ToastrService } from 'ngx-toastr';
-import { TextBoxModule } from '@syncfusion/ej2-angular-inputs';
+import { NumericTextBoxAllModule, TextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { CheckBoxModule } from '@syncfusion/ej2-angular-buttons';
 import { BusService } from './bus.service';
@@ -26,6 +26,7 @@ import { BusService } from './bus.service';
     TextBoxModule,
     DropDownListAllModule,
     CheckBoxModule,
+    NumericTextBoxAllModule,
   ],
   templateUrl: './bus.component.html',
   styleUrl: './bus.component.scss'

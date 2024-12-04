@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GridModule,DialogEditEventArgs, EditSettingsModel, ExcelQueryCellInfoEventArgs, GridComponent, GridLine, PageSettingsModel, SaveEventArgs, ToolbarItems, filterDialogClose } from '@syncfusion/ej2-angular-grids';
+import { GridModule,DialogEditEventArgs, EditSettingsModel, ExcelQueryCellInfoEventArgs, GridComponent, GridLine, PageSettingsModel, SaveEventArgs, ToolbarItems } from '@syncfusion/ej2-angular-grids';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, of } from 'rxjs';
 import { Browser } from '@syncfusion/ej2-base';
@@ -11,12 +11,12 @@ import Swal from 'sweetalert2';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ClickEventArgs } from '@syncfusion/ej2/navigations'
 import { ToastrService } from 'ngx-toastr';
-import { TextBoxModule } from '@syncfusion/ej2-angular-inputs';
+import { NumericTextBoxAllModule, TextBoxModule } from '@syncfusion/ej2-angular-inputs';
 import { DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { CheckBoxModule } from '@syncfusion/ej2-angular-buttons';
-import { IncomeTypeService } from './income-type.service';
+import { GasStationService } from './gas-station.service';
 @Component({
-  selector: 'app-trip-type',
+  selector: 'app-gas-station',
   standalone: true,
   imports: [
     FormsModule,
@@ -25,26 +25,25 @@ import { IncomeTypeService } from './income-type.service';
     GridModule,
     TextBoxModule,
     DropDownListAllModule,
-    CheckBoxModule
+    CheckBoxModule,
+    NumericTextBoxAllModule,
   ],
-  templateUrl: './income-type.component.html',
-  styleUrl: './income-type.component.scss'
+  templateUrl: './gas-station.component.html',
+  styleUrl: './gas-station.component.scss'
 })
-export class IncomeTypeComponent {
+export class GasStationComponent {
   pageSettings: PageSettingsModel = { pageSize: 10 };
   editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
   isEditMode: boolean = false;
-  isShow: boolean = false;
-
-  incomeTypeForm: any;
-  incomeTypeList: any[] = ["GATE", "BUS","TRIP"];
+  GasStationForm: any;
+  ownerList: any[] = ["UP", "Other"];
 
   @ViewChild('Grid') public grid: GridComponent;
 
   constructor(
-    private service: IncomeTypeService,
+    private service: GasStationService,
     private spinner: NgxSpinnerService,
     public toastr:ToastrService
   ) {}
@@ -55,7 +54,7 @@ export class IncomeTypeComponent {
 
   loadTableData() {
     this.spinner.show();
-    this.service.getIncomeTypeList()
+    this.service.getGasStationList()
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
@@ -63,39 +62,30 @@ export class IncomeTypeComponent {
     });
   }
 
-  rowDataBound(args): void {
-    let data = args.data['active'];
-    if (data === false) {
-        args.row.classList.add('active');
-    }
-  }
-
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
         this.isEditMode = false;
-        this.incomeTypeForm = this.createFormGroup(args.rowData);
+        this.GasStationForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
       this.isEditMode = true;
-      this.isShow = true;
-      this.incomeTypeForm = this.updateFormGroup(args.rowData);
+      this.GasStationForm = this.updateFormGroup(args.rowData);
       return;
-  }
+    }
 
     if (args.requestType === 'save') {
         this.submitClicked = true;
-        if (this.incomeTypeForm.valid) {
-            let formData = this.incomeTypeForm.value;
+        if (this.GasStationForm.valid) {
+            let formData = this.GasStationForm.value;
             if (args.action === 'add') {
-              formData.incCode = "";
-              this.createIncomeTypes(formData);
+              this.createGasStation(formData);
             }
             else {
-              this.updateIncomeTypes(formData);
+              this.updateGasStation(formData);
             }
         } else {
             args.cancel = true;
@@ -106,46 +96,68 @@ export class IncomeTypeComponent {
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const incCode = data[0].incCode; // Use gateCode instead of id
-      this.deleteGate(incCode);
+      const GasStationNo = data[0].GasStationNo;
+      this.deleteGasStation(GasStationNo);
+      return;
     }
-
   }
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-      args.dialog.width = 500;
+      args.dialog.width = 700;
+      //args.dialog.height = 600;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
         }
 
         const dialog = args.dialog;
-        dialog.header = args.requestType === 'beginEdit' ? 'Edit Income Type': 'Add New Income Type';
+        dialog.header = args.requestType === 'beginEdit' ? 'Edit Gas Station': 'Add New Gas Station';
     }
   }
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      incName: new FormControl('', Validators.required),
-      incType: new FormControl('', Validators.required),
+      gsName: new FormControl('', Validators.required),
+      location: new FormControl('', Validators.required),
+      totalBalance: new FormControl('', Validators.required),
       active: new FormControl(true, Validators.required),
+      unit: new FormControl('', Validators.required)
     });
   }
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
-      incCode: new FormControl(data.incCode),
-      incName: new FormControl(data.incName, Validators.required),
-      incType: new FormControl(data.incType, Validators.required),
+      gsName: new FormControl(data.gsName, Validators.required),
+      location: new FormControl(data.location, Validators.required),
+      totalBalance: new FormControl(data.totalBalance, Validators.required),
       active: new FormControl(data.active, Validators.required),
+      unit: new FormControl(data.unit, Validators.required)
     });
   }
 
-  createIncomeTypes(formData: any) {
+  validateNumberInput(event: any): void {
+    let inputValue = event.target.value;
+    
+    // Check if input is a number and between 1 and 9
+    if (inputValue < 0 ) {
+      event.target.value = ''; // Clear invalid input
+    }
+  }
+
+
+  rowDataBound(args): void {
+    let data = args.data['active'];
+    if (data === false) {
+        args.row.classList.add('active');
+    }
+  }
+  
+
+  createGasStation(formData: any) {
     this.spinner.show();
     this.service
-      .saveIncomeType(formData)
+      .createGasStation(formData)
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.loadTableData();
@@ -153,16 +165,16 @@ export class IncomeTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Income Type', result.messageContent, 'error');
+          Swal.fire('Gas Station', result.messageContent, 'error');
           this.loadTableData();
         }
       });
   }
 
-  updateIncomeTypes(formData: any) {
+  updateGasStation(formData: any) {
     this.spinner.show();
     this.service
-      .updateIncomeType(formData)
+      .updateGasStation(formData)
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result.status == true) {
@@ -170,13 +182,13 @@ export class IncomeTypeComponent {
           this.showSuccess(result.messageContent);
         } else {
           this.spinner.hide();
-          Swal.fire('Income Type', result.messageContent, 'error');
+          Swal.fire('Gas Station', result.messageContent, 'error');
           this.loadTableData();
         }
       });
   }
 
-  deleteGate(id: any) {
+  deleteGasStation(id: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this data!',
@@ -189,7 +201,7 @@ export class IncomeTypeComponent {
       if (response.value) {
         this.spinner.show();
         this.service
-          .deleteIncomeType(id)
+          .deleteGasStation(id)
           .pipe(catchError((err) => of(this.showError(err))))
           .subscribe((result) => {
             if (result.status == true) {
@@ -197,7 +209,7 @@ export class IncomeTypeComponent {
               this.loadTableData();
             } else {
               this.spinner.hide();
-              Swal.fire('Income Type', result.messageContent, 'error');
+              Swal.fire('Gas Station', result.messageContent, 'error');
               this.loadTableData();
             }
           });
@@ -208,26 +220,26 @@ export class IncomeTypeComponent {
   }
 
   validateControl(controlName: string) {
-    const control = this.incomeTypeForm.get(controlName);
+    const control = this.GasStationForm.get(controlName);
     return (control.invalid && (control.dirty || control.touched)) || (control.invalid && this.submitClicked);
   }
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    this.toastr.success(msg, 'IncomeType', {
+    this.toastr.success(msg, 'Gas Station', {
       timeOut: 2000,
     });
   }
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Income Type', error.toString(), 'error');
+    Swal.fire('Gas Station', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {
     if(args.item.text === 'Excel Export') {
       this.grid.excelExport({
-        fileName:'IncomeType.xlsx'});
+        fileName:'GasStation.xlsx'});
     }
   }
 
@@ -240,3 +252,6 @@ export class IncomeTypeComponent {
     }
   }
 }
+
+
+

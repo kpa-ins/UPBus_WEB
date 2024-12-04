@@ -20,12 +20,12 @@ export class DailyPlanService {
     return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetDriverByBusNo?busNo=${busNo}`);
   }
 
-  getTripCodes(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.baseUrl}/api/MasterSetup/GetTripCodes`);
+  getTrackTypes(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.baseUrl}/api/MasterSetup/GetTrackTypes`);
   }
 
-  getBusList(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.baseUrl}/api/MasterSetup/GetBusLists`);
+  getBusData(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.baseUrl}/api/MasterSetup/GetBusData`);
   }
 
   saveDailyPlan(data: any) {

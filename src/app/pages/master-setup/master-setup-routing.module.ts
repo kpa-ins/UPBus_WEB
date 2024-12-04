@@ -8,6 +8,7 @@ import { DailyPlanComponent } from './components/daily-plan/daily-plan.component
 import { ExpenseTypeComponent } from './components/expense-type/expense-type.component';
 import { IncomeTypeComponent } from './components/income-type/income-type.component';
 import { TrackTypeComponent } from './components/track-type/track-type.component';
+import { GasStationComponent } from './components/gas-station/gas-station.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'expense-type', component: ExpenseTypeComponent },
   { path: 'income-type', component: IncomeTypeComponent },
   { path: 'track-type', component: TrackTypeComponent },
+  { path: 'gas-station', component: GasStationComponent },
 
 ];
 
