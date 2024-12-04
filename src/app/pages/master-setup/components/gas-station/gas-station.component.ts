@@ -37,7 +37,7 @@ export class GasStationComponent {
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
   isEditMode: boolean = false;
-  GasStationForm: any;
+  gasStationForm: any;
   ownerList: any[] = ["UP", "Other"];
 
   @ViewChild('Grid') public grid: GridComponent;
@@ -65,22 +65,20 @@ export class GasStationComponent {
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
-        this.isEditMode = false;
-        this.GasStationForm = this.createFormGroup(args.rowData);
+        this.gasStationForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
-      this.isEditMode = true;
-      this.GasStationForm = this.updateFormGroup(args.rowData);
+      this.gasStationForm = this.updateFormGroup(args.rowData);
       return;
     }
 
     if (args.requestType === 'save') {
         this.submitClicked = true;
-        if (this.GasStationForm.valid) {
-            let formData = this.GasStationForm.value;
+        if (this.gasStationForm.valid) {
+            let formData = this.gasStationForm.value;
             if (args.action === 'add') {
               this.createGasStation(formData);
             }
@@ -96,8 +94,8 @@ export class GasStationComponent {
     if (args.requestType === 'delete') {
       args.cancel = true;
       const data = args.data as any[];
-      const GasStationNo = data[0].GasStationNo;
-      this.deleteGasStation(GasStationNo);
+      const id = data[0].gsCode;
+      this.deleteGasStation(id);
       return;
     }
   }
@@ -105,7 +103,6 @@ export class GasStationComponent {
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
       args.dialog.width = 700;
-      //args.dialog.height = 600;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();
@@ -120,7 +117,7 @@ export class GasStationComponent {
     return new FormGroup({
       gsName: new FormControl('', Validators.required),
       location: new FormControl('', Validators.required),
-      totalBalance: new FormControl('', Validators.required),
+      totalBalance: new FormControl(0, Validators.required),
       active: new FormControl(true, Validators.required),
       unit: new FormControl('', Validators.required)
     });
@@ -128,6 +125,7 @@ export class GasStationComponent {
 
   updateFormGroup(data: any): FormGroup {
     return new FormGroup({
+      gsCode: new FormControl(data.gsCode),
       gsName: new FormControl(data.gsName, Validators.required),
       location: new FormControl(data.location, Validators.required),
       totalBalance: new FormControl(data.totalBalance, Validators.required),
@@ -220,7 +218,7 @@ export class GasStationComponent {
   }
 
   validateControl(controlName: string) {
-    const control = this.GasStationForm.get(controlName);
+    const control = this.gasStationForm.get(controlName);
     return (control.invalid && (control.dirty || control.touched)) || (control.invalid && this.submitClicked);
   }
 

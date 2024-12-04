@@ -44,6 +44,7 @@ export class DailyPlanComponent {
 
   dailyPlanForm: any;
   driverNameList: any[] = [];
+  tripCodeList: any[] = [];
   busList: any[] = [];
   dailyPlanList: any[] = ["မနက်", "ညနေ"];
   trackTypeList: any[] = ["UP", "DOWN"];
@@ -68,7 +69,7 @@ export class DailyPlanComponent {
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result) {
-          this.trackTypeList = result;
+          this.tripCodeList = result;
         }
       });
   }

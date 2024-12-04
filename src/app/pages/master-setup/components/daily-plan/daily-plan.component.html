@@ -32,7 +32,7 @@
                 <div class="row">
                   <div class="form-group col-md-6">
                     <label class="required">Trip Code</label>
-                    <ejs-dropdownlist formControlName="trackCode" [dataSource]="trackTypeList" [fields]="{ text: 'tripCode', value: 'tripCode' }"  [autofocus]="true"></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="trackCode" [dataSource]="tripCodeList" [fields]="{ text: 'tripCode', value: 'tripCode' }"  [autofocus]="true"></ejs-dropdownlist>
                     <div *ngIf="validateControl('trackCode')" class="text-danger">
                       Trip Code is required.
                     </div>
@@ -80,10 +80,11 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-md-6">
-                      <ejs-dropdownlist formControlName="trackType" [dataSource]='trackTypeList'  placeholder="Track Type"  popupHeight='200px' floatLabelType='Always'></ejs-dropdownlist>
-                      <div [style.visibility]='validateControl("trackType")? "visible": "hidden"'>
-                        <label class="e-error" style="display: block;">*Track type is required</label>
-                      </div>
+                    <label class="required">Track Type</label>
+                    <ejs-dropdownlist formControlName="trackType" [dataSource]="trackTypeList" ></ejs-dropdownlist>
+                    <div [style.visibility]='validateControl("trackType")? "visible": "hidden"'>
+                      <label class="e-error" style="display: block;">*Track Type is required</label>
+                    </div>
                   </div>
               </div>
               </form>
