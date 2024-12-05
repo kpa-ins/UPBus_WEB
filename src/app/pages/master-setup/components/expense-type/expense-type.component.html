@@ -17,6 +17,20 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
+          <div class="row mb-2">
+            <div class="col-lg-3 col-md-6">
+              <div class="mb-3">
+                <label>Expense Type</label>
+                <ejs-dropdownlist [(ngModel)]="expenseType" [dataSource]="expTypeList"   placeholder="Select One" popupHeight='250px'></ejs-dropdownlist>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 align-self-end">
+              <div class="mb-3">
+                <button type="button" class="btn btn-primary w-md"  (click)="loadTableData()" class="btn btn-primary w-md h-sm"><span class="fas fa-eye"></span> &nbsp;View</button>&nbsp;&nbsp;
+              </div>
+            </div>
+          </div>
           <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (rowDataBound)='rowDataBound($event)' (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
               <e-column field='expCode' headerText='Expense Code' [isPrimaryKey]="true" width="70"></e-column>
@@ -30,46 +44,24 @@
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <div [formGroup]="expenseTypeForm">
-
-                <div class="row">
-                  <!-- <div class="form-group col-md-6">
-                    <div class="e-float-input e-control-wrapper">
-                      <input
-                        formControlName="expCode"
-                        id="expCode"
-                        type="text"
-                        maxlength="7"
-                        oninput="this.value = this.value.toUpperCase()"
-                        autocomplete="off"
-                        [readonly]="isEditMode"
-                      >
-                      <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top required" for="expCode">Expense Code</label>
-                    </div>
-                    <div [style.visibility]='validateControl("expCode") ? "visible" : "hidden"'>
-                      <label class="e-error" for="expCode" style="display: block;">*Expense Code is required</label>
-                    </div>
-                  </div> -->
-
-                  <div class="form-group">
-                    <div class="e-float-input e-control-wrapper">
-                      <input formControlName="expName" id="expName" type="text" maxlength="50"  autocomplete="off">
-                      <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top required" for="expName">Expense Name</label>
-                    </div>
-                    <div [style.visibility]='validateControl("expName")? "visible": "hidden"'>
-                        <label class="e-error" for="expName" style="display: block;">*Expense Name is required</label>
-                    </div>
-                  </div>
-                </div>
                 <div class="row">
                   <div class="form-group">
-                    <ejs-dropdownlist formControlName="expType" [dataSource]='expenseTypeList'  placeholder="Expense Type"  popupHeight='200px' [readonly]="isEditMode" floatLabelType='Always'></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="expType" [dataSource]='expenseTypeList'  placeholder="Expense Type"  popupHeight='200px' [readonly]="isEditMode" floatLabelType='Always' [autofocus]="true"></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("expType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Expense type is required</label>
                     </div>
                   </div>
                 </div>
+
+                <div class="row">
+                  <div class="form-group">
+                    <ejs-textbox formControlName="expName" placeholder="Expense Name" id="incName" type="text" maxlength="50" floatLabelType='Always' autocomplete="off" ></ejs-textbox>
+                    <div [style.visibility]='validateControl("expName")? "visible": "hidden"'>
+                      <label class="e-error" for="expName" style="display: block;">*Expense Name is required</label>
+                    </div>
+                  </div>
+                </div>
+                
                 <div class="row">
                   <div class="form-group col-md-6 active mt-2" >
                     <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>

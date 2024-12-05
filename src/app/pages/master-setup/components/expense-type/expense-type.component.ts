@@ -36,9 +36,11 @@ export class ExpenseTypeComponent {
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
   isEditMode: boolean = false;
-
+  expenseType: string;
   expenseTypeForm: any;
   expenseTypeList: any[] = ["GATE", "BUS","TRIP"];
+  expTypeList: any[] = ["GATE", "BUS","TRIP"];
+
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -49,12 +51,14 @@ export class ExpenseTypeComponent {
   ) {}
 
   ngOnInit(): void {
-    this.loadTableData();
+    //this.loadTableData();
+    this.expTypeList.unshift("All");
+
   }
 
   loadTableData() {
     this.spinner.show();
-    this.service.getExpenseTypeList()
+    this.service.getExpenseTypeList(this.expenseType)
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
@@ -124,8 +128,8 @@ export class ExpenseTypeComponent {
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      expName: new FormControl('', Validators.required),
       expType: new FormControl('', Validators.required),
+      expName: new FormControl('', Validators.required),
       active: new FormControl(true, Validators.required),
     });
   }

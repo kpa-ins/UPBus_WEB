@@ -17,6 +17,20 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
+          <div class="row mb-2">
+            <div class="col-lg-3 col-md-6">
+              <div class="mb-3">
+                <label>Income Type</label>
+                <ejs-dropdownlist [(ngModel)]="incomeType" [dataSource]="incTypeList"   placeholder="Select One" popupHeight='250px'></ejs-dropdownlist>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 align-self-end">
+              <div class="mb-3">
+                <button type="button" class="btn btn-primary w-md"  (click)="loadTableData()" class="btn btn-primary w-md h-sm"><span class="fas fa-eye"></span> &nbsp;View</button>&nbsp;&nbsp;
+              </div>
+            </div>
+          </div>
           <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (rowDataBound)='rowDataBound($event)' (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
               <e-column field='incCode' headerText='Income Code' [isPrimaryKey]="true" width="100"></e-column>
@@ -40,27 +54,24 @@
                     </div>
                   </div>
                 </div> -->
-
                 <div class="row">
                   <div class="form-group">
-                    <div class="e-float-input e-control-wrapper">
-                      <input formControlName="incName" id="incName" type="text" maxlength="50"  autocomplete="off">
-                      <span class="e-float-line"></span>
-                      <label class="e-float-text e-label-top required" for="incName">Income Name</label>
-                    </div>
-                    <div [style.visibility]='validateControl("incName")? "visible": "hidden"'>
-                        <label class="e-error" for="incName" style="display: block;">*Income Name is required</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group">
-                    <ejs-dropdownlist formControlName="incType" [dataSource]='incomeTypeList'  placeholder="Income Type"  popupHeight='200px' floatLabelType='Always' [readonly]="isEditMode"></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="incType" [dataSource]='incomeTypeList'  placeholder="Income Type"  popupHeight='200px' floatLabelType='Always' [readonly]="isEditMode" [autofocus]="true"></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("incType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Income type is required</label>
                     </div>
                   </div>
                 </div>
+
+                <div class="row">
+                  <div class="form-group">
+                    <ejs-textbox formControlName="incName" placeholder="Income Name" id="incName" type="text" maxlength="50" floatLabelType='Always' autocomplete="off" ></ejs-textbox>
+                    <div [style.visibility]='validateControl("incName")? "visible": "hidden"'>
+                      <label class="e-error" for="incName" style="display: block;">*Income Name is required</label>
+                    </div>
+                  </div>
+                </div>
+                
                 <div class="row">
                   <div class="form-group col-md-6 active mt-2" >
                     <ejs-checkbox formControlName="active" label="Active"></ejs-checkbox>

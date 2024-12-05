@@ -37,9 +37,11 @@ export class IncomeTypeComponent {
   submitClicked: boolean = false;
   isEditMode: boolean = false;
   isShow: boolean = false;
-
+  incomeType: string;
   incomeTypeForm: any;
   incomeTypeList: any[] = ["GATE", "BUS","TRIP"];
+  incTypeList: any[] = ["GATE", "BUS","TRIP"];
+
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -50,12 +52,13 @@ export class IncomeTypeComponent {
   ) {}
 
   ngOnInit(): void {
-    this.loadTableData();
+    //this.loadTableData();
+    this.incTypeList.unshift("All");
   }
 
   loadTableData() {
     this.spinner.show();
-    this.service.getIncomeTypeList()
+    this.service.getIncomeTypeList(this.incomeType)
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;

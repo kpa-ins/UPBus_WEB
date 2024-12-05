@@ -11,8 +11,8 @@ const httpOptions = {
 export class ExpenseTypeService {
   constructor(private http: HttpClient) { }
 
-  getExpenseTypeList() {
-    return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetExpenseTypeList`);
+  getExpenseTypeList(expenseType: any) {
+    return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetExpenseTypeList/?expenseType=${expenseType}`);
   }
 
   saveExpenseType(data: any) {

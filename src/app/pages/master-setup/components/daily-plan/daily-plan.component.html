@@ -19,13 +19,14 @@
         <div class="card-body">
           <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
             <e-columns>
-              <e-column field='regNo' headerText="ID" width="100" minWidth="100" [isPrimaryKey]="true"></e-column>
-              <e-column field='trackCode' headerText="Trip Code" width="100" minWidth="100"></e-column>
+              <e-column field='regNo' headerText="ID" width="60" minWidth="60" [isPrimaryKey]="true"></e-column>
+              <e-column field='trackCode' headerText="Trip Code" width="80" minWidth="80"></e-column>
               <e-column field='tripDate' headerText="Trip Date" type="date" [format]="{type: 'date', format:'dd-MMM-yyyy hh:mm a'}" width="100" minWidth="100"></e-column>
-              <e-column field='busNo' headerText="Bus No" width="100" minWidth="100"></e-column>
+              <e-column field='busNo' headerText="Bus No" width="80" minWidth="80"></e-column>
               <e-column field='driverName' headerText="Driver Name" width="100" minWidth="100"></e-column>
-              <e-column field='tripTime' headerText="Trip Time" width="100" minWidth="100"></e-column>
-              <e-column field='track' headerText="Track" width="100" minWidth="100"></e-column>
+              <e-column field='tripTime' headerText="Trip Time" width="60" minWidth="60"></e-column>
+              <e-column field='track' headerText="Track" width="80" minWidth="80"></e-column>
+              <e-column field='trackType' headerText="Track Type" width="80" minWidth="80"></e-column>
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <form [formGroup]="dailyPlanForm">

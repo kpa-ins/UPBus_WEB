@@ -11,8 +11,8 @@ const httpOptions = {
 export class IncomeTypeService {
   constructor(private http: HttpClient) { }
 
-  getIncomeTypeList() {
-    return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetIncomeTypeList`);
+  getIncomeTypeList(incomeType: any) {
+    return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetIncomeTypeList/?incomeType=${incomeType}`);
   }
 
   saveIncomeType(data: any) {
