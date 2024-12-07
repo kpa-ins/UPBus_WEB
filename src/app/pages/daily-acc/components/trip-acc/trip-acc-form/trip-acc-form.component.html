@@ -1,0 +1,176 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">{{ title }}</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Daily Acc</a></li>
+              <li class="breadcrumb-item"><a href="/daily-acc/trip-acc-list">Trip Acc</a></li>
+              <li class="breadcrumb-item active">{{ title }}</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="tripAccForm" (ngSubmit)="onFormSubmit()" onkeydown="if(event.keyCode === 13) {   return false; }">
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <h4 class="mb-4 font-size-16">Trip Acc</h4>
+                </div>
+                <div class="col-md-6 text-end">
+                  <button type="submit" [disabled]="!tripAccForm.valid" class="btn btn-primary">Save Changes</button>&nbsp;&nbsp;
+                  <button type="button" (click)="backToList()" class="btn btn-secondary">Cancel</button>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="busNo" class="required">Bus No</label>
+                    <ejs-dropdownlist formControlName="busNo" [dataSource]='busList' [fields]="{ text: 'busNo', value: 'busNo' }" allowFiltering="true" (change)="onBusNoChange($event.value)" popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
+                    <div [style.visibility]='validateControl("busNo")? "visible": "hidden"'>
+                      <label class="e-error" for="busNo" style="display: block;">*Bus No is required</label>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="driverName" class="required">Driver Name</label>
+                    <ejs-dropdownlist formControlName="driverName" [dataSource]='busList' [fields]="{ text: 'driverName', value: 'driverName' }" allowFiltering="true"  popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
+                    <div [style.visibility]='validateControl("driverName")? "visible": "hidden"'>
+                      <label class="e-error" for="driverName" style="display: block;">*Driver Name is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="downDate" class="required">Down Date</label>
+                    <ejs-datepicker formControlName="downDate" [format]="'dd-MMM-yyyy'"></ejs-datepicker>
+                    <div [style.visibility]='validateControl("downDate")? "visible": "hidden"'>
+                      <label class="e-error" for="downDate" style="display: block;">*Down Date is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="dtrackName" class="required">Down Track Name</label>
+                    <ejs-textbox formControlName="dtrackName" autocomplete="off"></ejs-textbox>
+                    <div [style.visibility]='validateControl("dtrackName")? "visible": "hidden"'>
+                      <label class="e-error" for="dtrackName" style="display: block;">*Down Track Name is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="dgateCode" class="required">Down Gate</label>
+                    <ejs-dropdownlist formControlName="dgateCode" [dataSource]='gateList' [fields]="{ text: 'gateCode', value: 'gateCode' }" allowFiltering="true" popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
+                    <div [style.visibility]='validateControl("dgateCode")? "visible": "hidden"'>
+                      <label class="e-error" for="dgateCode" style="display: block;">*Bus No is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="dexpTotal" class="required">Down Expense Total</label>
+                    <ejs-numerictextbox formControlName="dexpTotal" format='#' [validateDecimalOnType]='true' min='0' (input)="validateNumberInput($event)" floatLabelType='Always' ></ejs-numerictextbox>
+                    <div [style.visibility]='validateControl("dexpTotal")? "visible": "hidden"'>
+                      <label class="e-error" for="dexpTotal" style="display: block;">*Down Expense Total is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="dincTotal" class="required">Down Income Total</label>
+                    <ejs-numerictextbox formControlName="dincTotal" format='#' [validateDecimalOnType]='true' min='0' (input)="validateNumberInput($event)" floatLabelType='Always' ></ejs-numerictextbox>
+                    <div [style.visibility]='validateControl("dincTotal")? "visible": "hidden"'>
+                      <label class="e-error" for="dincTotal" style="display: block;">*Down Income Total is required</label>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="upDate" class="required">UP Date</label>
+                    <ejs-datepicker formControlName="upDate" [format]="'dd-MMM-yyyy'"></ejs-datepicker>
+                    <div [style.visibility]='validateControl("upDate")? "visible": "hidden"'>
+                      <label class="e-error" for="upDate" style="display: block;">*UP Date is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="utrackName" class="required">Up Track Name</label>
+                    <ejs-textbox formControlName="utrackName" autocomplete="off"></ejs-textbox>
+                    <div [style.visibility]='validateControl("utrackName")? "visible": "hidden"'>
+                      <label class="e-error" for="utrackName" style="display: block;">*Up Track Name is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="ugateCode" class="required">Up Gate</label>
+                    <ejs-dropdownlist formControlName="ugateCode" [dataSource]='gateList' [fields]="{ text: 'gateCode', value: 'gateCode' }" allowFiltering="true" popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
+                    <div [style.visibility]='validateControl("ugateCode")? "visible": "hidden"'>
+                      <label class="e-error" for="ugateCode" style="display: block;">*Up Gate is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="uexpTotal" class="required">Up Expense Total</label>
+                    <ejs-numerictextbox formControlName="uexpTotal" format='#' [validateDecimalOnType]='true' min='0' (input)="validateNumberInput($event)" floatLabelType='Always' ></ejs-numerictextbox>
+                    <div [style.visibility]='validateControl("uexpTotal")? "visible": "hidden"'>
+                      <label class="e-error" for="uexpTotal" style="display: block;">*Up Expense Total is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="mb-2">
+                    <label for="uincTotal" class="required">Up Income Total</label>
+                    <ejs-numerictextbox formControlName="uincTotal" format='#' [validateDecimalOnType]='true' min='0' (input)="validateNumberInput($event)" floatLabelType='Always' ></ejs-numerictextbox>
+                    <div [style.visibility]='validateControl("uincTotal")? "visible": "hidden"'>
+                      <label class="e-error" for="uincTotal" style="display: block;">*Up Income Total is required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6 col-sm-6">
+                  <div class="mb-2">
+                    <label>Down Remark</label>
+                    <ejs-textbox formControlName="dremark" rows="2" [multiline]="true" maxlength="500" autocomplete="off"></ejs-textbox>
+                  </div>
+                </div>
+  
+                <div class="col-lg-6 col-sm-6">
+                  <div class="mb-2">
+                    <label>Up Remark</label>
+                    <ejs-textbox formControlName="uremark" rows="2" [multiline]="true" maxlength="500" autocomplete="off"></ejs-textbox>
+                  </div>
+                </div>
+  
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  

@@ -17,6 +17,7 @@ import { DatePickerModule, DateTimePickerModule } from '@syncfusion/ej2-angular-
 import { CommonModule } from '@angular/common';
 import * as moment from 'moment';
 import { DailyGateIncomeService } from './daily-gate-income.service';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-daily-gate-income',
   standalone: true,
@@ -41,24 +42,110 @@ export class DailyGateIncomeComponent {
   toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
   submitClicked: boolean = false;
 
+  dailyGateAccForm: any;
   dailyGateIncomeForm: any;
   incTypeList: any[] = [];
   gateList: any[] = [];
   paidTypeList: any[] = ["Credit", "Paid"];
   isEditMode: boolean = false;
+  gate: string;
+  date: string;
+  gateAccCode: string;
+  currentYear: number;
 
   @ViewChild('Grid') public grid: GridComponent;
 
   constructor(
     private service: DailyGateIncomeService,
     private spinner: NgxSpinnerService,
-    public toastr:ToastrService
+    public toastr:ToastrService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
+
+    const id = this.route.snapshot.queryParams['id'];
+    this.gateAccCode = id;
+    const strArr = id.split('-');
+    this.gate = strArr[0];
+    const d = strArr[1];
+
+    const currentDate = new Date();
+    this.currentYear = currentDate.getFullYear();  // Get the current year
+
+    this.date = d.substring(2, 4)+ "/" + d.substring(0, 2) +"/"+ this.currentYear;
+
+    this.dailyGateAccForm = new FormGroup({
+      gateCode: new FormControl(''),
+      accDate: new FormControl(''),
+      incTotalAmt: new FormControl(''),
+      expTotalAmt: new FormControl(''),
+      incCreditAmt: new FormControl(''),
+      incReceiveAmt: new FormControl(''),
+      remark: new FormControl(''),
+    });
+
+    this.loadTableData();
+    this.getDailyGateAccById();
     this.loadTableData();
     this.getActiveGate();
     this.getActiveIncomeType();
+  }
+
+  getDailyGateAccById() {
+    this.spinner.show();
+    this.service.getDailyGateAccById(this.gate, this.date)
+    .pipe(catchError((err) => of(this.showError(err))))
+      .subscribe((result) => {
+        if (result) {
+          this.dailyGateAccForm.controls['gateCode'].setValue(result[0].gateCode);
+          this.dailyGateAccForm.controls['accDate'].setValue(result[0].accDate);
+          this.dailyGateAccForm.controls['incTotalAmt'].setValue(result[0].incTotalAmt);
+          this.dailyGateAccForm.controls['expTotalAmt'].setValue(result[0].expTotalAmt);
+          this.dailyGateAccForm.controls['incCreditAmt'].setValue(result[0].incCreditAmt);
+          this.dailyGateAccForm.controls['incReceiveAmt'].setValue(result[0].incReceiveAmt);
+          this.dailyGateAccForm.controls['remark'].setValue(result[0].remark);
+
+          this.dailyGateAccForm.controls['gateCode'].disable();
+          this.dailyGateAccForm.controls['accDate'].disable();
+          this.dailyGateAccForm.controls['incTotalAmt'].disable();
+          this.dailyGateAccForm.controls['expTotalAmt'].disable();
+          this.dailyGateAccForm.controls['incCreditAmt'].disable();
+          this.dailyGateAccForm.controls['incReceiveAmt'].disable();
+
+        } else {
+          Swal.fire('Daily Gate Acc', 'Data not found!', 'error');
+        }
+
+        this.spinner.hide();
+    });
+  }
+
+  backToList() {
+    this.router.navigate(["/daily-acc/daily-gate-acc"]);
+  }
+
+  onFormSubmit() {
+    const formData = this.dailyGateAccForm.value;
+    formData.gateCode = this.gate;
+    formData.accDate = this.date;
+    this.spinner.show();
+    this.service
+      .updateDailyGateAcc(formData)  // Pass the updated formData here
+      .pipe(catchError((err) => of(this.showError(err))))  // Handle errors if any
+      .subscribe((result) => {
+        this.spinner.hide(); // Hide the spinner after update
+        if (result.status === true) {
+          this.showSuccess(result.messageContent);  // Show success message
+          this.getDailyGateAccById();
+          this.loadTableData(); // Refresh the table with updated data
+         
+        } else {
+          Swal.fire('Error', result.messageContent, 'error'); // Show error if updating fails
+          this.loadTableData(); 
+        }
+      });
   }
 
   getActiveGate() {
@@ -91,6 +178,13 @@ export class DailyGateIncomeComponent {
     });
   }
 
+  onIncomeTypeChange(incCode: string) {
+    if(incCode){
+      const incList = this.incTypeList.filter(x=>x.incCode==incCode);
+      this.dailyGateIncomeForm.controls['description'].setValue(incList[0].incName);
+    }
+  }
+
   actionBegin(args: SaveEventArgs): void {
     if (args.requestType === 'add') {
         this.submitClicked = false;
@@ -110,6 +204,8 @@ export class DailyGateIncomeComponent {
         this.submitClicked = true;
         if (this.dailyGateIncomeForm.valid) {
             let formData = this.dailyGateIncomeForm.value;
+            formData.gateAccCode = this.gateAccCode;
+            formData.accDate = this.date;
             if (args.action === 'add') {
               formData.expDate = moment(formData.expDate).format('MM/DD/YYYY');
               this.createDailyGateIncome(formData);
@@ -140,9 +236,10 @@ export class DailyGateIncomeComponent {
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.spinner.hide();
-        this.loadTableData();
         if (result.status) {
           this.showSuccess(result.messageContent);
+          this.getDailyGateAccById();
+          this.loadTableData();
         } else {
           Swal.fire('Error', result.messageContent, 'error');
           this.loadTableData(); 
@@ -159,8 +256,9 @@ export class DailyGateIncomeComponent {
       .subscribe((result) => {
         this.spinner.hide(); // Hide the spinner after update
         if (result.status === true) {
-          this.loadTableData(); // Refresh the table with updated data
           this.showSuccess(result.messageContent);  // Show success message
+          this.getDailyGateAccById();
+          this.loadTableData(); // Refresh the table with updated data
         } else {
           Swal.fire('Error', result.messageContent, 'error'); // Show error if updating fails
           this.loadTableData(); 
@@ -183,7 +281,7 @@ export class DailyGateIncomeComponent {
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      gateCode: new FormControl('', Validators.required),
+      gateCode: new FormControl(this.gate, Validators.required),
       incDate: new FormControl(new Date(), Validators.required),
       incCode: new FormControl('', Validators.required),
       paidType: new FormControl('', Validators.required),
@@ -220,13 +318,15 @@ export class DailyGateIncomeComponent {
       if (response.value) {
         this.spinner.show();
         this.service
-          .deleteDailyGateIncome(id)
+          .deleteDailyGateIncome(id, this.date)
           .pipe(catchError((err) => of(this.showError(err))))
           .subscribe((result) => {
             this.spinner.hide();
             if (result.status === true) {
               this.showSuccess(result.messageContent);
               this.loadTableData();
+              this.getDailyGateAccById(); // Refresh the table with updated data
+
             } else {
               Swal.fire('Daily Gate Income', result.messageContent, 'error');
             }
@@ -235,6 +335,15 @@ export class DailyGateIncomeComponent {
         Swal.close();
       }
     });
+  }
+
+  validateNumberInput(event: any): void {
+    let inputValue = event.target.value;
+    
+    // Check if input is a number and between 1 and 9
+    if (inputValue < 0 ) {
+      event.target.value = ''; // Clear invalid input
+    }
   }
 
   validateControl(controlName: string) {

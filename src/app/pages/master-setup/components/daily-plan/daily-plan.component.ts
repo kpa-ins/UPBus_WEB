@@ -44,11 +44,11 @@ export class DailyPlanComponent {
 
   dailyPlanForm: any;
   driverNameList: any[] = [];
-  tripCodeList: any[] = [];
+  trackCodeList: any[] = [];
   busList: any[] = [];
   dailyPlanList: any[] = ["မနက်", "ညနေ"];
   trackTypeList: any[] = ["UP", "DOWN"];
-
+  trackList: any[] = ["နတ်မောက်", "ကံပြား", "တောင်တွင်းကြီး"]
 
   @ViewChild('Grid') public grid: GridComponent;
 
@@ -69,7 +69,7 @@ export class DailyPlanComponent {
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result) {
-          this.tripCodeList = result;
+          this.trackCodeList = result;
         }
       });
   }
@@ -98,6 +98,14 @@ export class DailyPlanComponent {
     if(busNo){
       const bList = this.busList.filter(x=>x.busNo==busNo);
       this.dailyPlanForm.controls['driverName'].setValue(bList[0].driverName);
+    }
+  }
+
+
+  onTrackChange(track: string) {
+    if(track){
+      const tList = this.trackCodeList.filter(x=>x.tripCode==track);
+      this.dailyPlanForm.controls['trackType'].setValue(tList[0].tripType);
     }
   }
 
@@ -178,7 +186,7 @@ export class DailyPlanComponent {
 
   actionComplete(args: DialogEditEventArgs): void {
     if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
-        args.dialog.width = 700;
+        args.dialog.width = 800;
         if (Browser.isDevice) {
             args!.dialog!.height = window.innerHeight - 90 + 'px';
             (<Dialog>args.dialog).dataBind();

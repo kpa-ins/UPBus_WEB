@@ -30,64 +30,61 @@
             </e-columns>
             <ng-template #editSettingsTemplate let-data>
               <form [formGroup]="dailyPlanForm">
-                <div class="row">
-                  <div class="form-group col-md-6">
+                <div class="row mb-2">
+                  <div class="form-group col-md-4">
                     <label class="required">Trip Code</label>
-                    <ejs-dropdownlist formControlName="trackCode" [dataSource]="tripCodeList" [fields]="{ text: 'tripCode', value: 'tripCode' }"  [autofocus]="true"></ejs-dropdownlist>
+                    <ejs-dropdownlist formControlName="trackCode" [dataSource]="trackCodeList" [fields]="{ text: 'tripCode', value: 'tripCode' }" (change)="onTrackChange($event.value)"  [autofocus]="true"></ejs-dropdownlist>
                     <div *ngIf="validateControl('trackCode')" class="text-danger">
                       Trip Code is required.
                     </div>
                   </div>
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label  class="required">Bus No</label>
                     <ejs-dropdownlist formControlName="busNo" [dataSource]='busList' [fields]="{ text: 'busNo', value: 'busNo' }" allowFiltering="true" (change)="onBusNoChange($event.value)" popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("busNo")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Bus number is required</label>
                     </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label  class="required">Driver Name</label>
                     <ejs-dropdownlist formControlName="driverName" [dataSource]='busList' [fields]="{ text: 'driverName', value: 'driverName' }" allowFiltering="true"  popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("driverName")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Driver Name is required</label>
                     </div>
                   </div>
-                  <div class="form-group col-md-6">
+                </div>
+                <div class="row mb-2"> 
+                  <div class="form-group col-md-4">
                     <label class="required">Trip Time</label>
                     <ejs-dropdownlist formControlName="tripTime" [dataSource]="dailyPlanList" ></ejs-dropdownlist>
                     <div *ngIf="validateControl('tripTime')" class="text-danger">
                       Trip Time is required.
                     </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label class="required">Trip Date</label>
                     <ejs-datetimepicker formControlName="tripDate" [format]="'dd-MMM-yyyy hh:mm a'"></ejs-datetimepicker>
                     <div [style.visibility]='validateControl("tripDate")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Trip Date is required</label>
                     </div>
                   </div>
-
-                  <div class="form-group col-md-6">
-                    <label class="required">Track</label>
-                    <ejs-textbox formControlName="track" autocomplete="off"></ejs-textbox>
-                    <div [style.visibility]='validateControl("track")? "visible": "hidden"'>
-                      <label class="e-error" style="display: block;">*Track is required</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label class="required">Track Type</label>
                     <ejs-dropdownlist formControlName="trackType" [dataSource]="trackTypeList" ></ejs-dropdownlist>
                     <div [style.visibility]='validateControl("trackType")? "visible": "hidden"'>
                       <label class="e-error" style="display: block;">*Track Type is required</label>
                     </div>
                   </div>
-              </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="form-group col-md-4">
+                    <label class="required">Track</label>
+                    <ejs-dropdownlist formControlName="track" [dataSource]="trackList" ></ejs-dropdownlist>
+                    <div [style.visibility]='validateControl("track")? "visible": "hidden"'>
+                      <label class="e-error" style="display: block;">*Track is required</label>
+                    </div>
+                  </div>
+                </div>
               </form>
             </ng-template>
           </ejs-grid>

@@ -65,6 +65,6 @@ import { PagetitleComponent } from 'src/app/shared/ui/pagetitle/pagetitle.compon
     MultiSelectModule,
     CheckBoxModule,
   ],
-  providers: [PageService, SortService, EditService, ToolbarService, ExcelExportService, ResizeService]
+  providers: [PageService, SortService, EditService, ToolbarService, ExcelExportService, ResizeService, DatePipe]
 })
 export class DailyAccModule { }

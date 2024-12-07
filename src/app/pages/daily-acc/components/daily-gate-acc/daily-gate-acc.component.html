@@ -1,1 +1,60 @@
-<p>daily-gate-acc works!</p>
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">Daily Gate Acc</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Daily Acc</a></li>
+              <li class="breadcrumb-item active">Daily Gate Acc</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+              <e-columns>
+                <e-column field='gateCode' headerText="Gate" width="80" minWidth="80" [isPrimaryKey]="true"></e-column>
+                <e-column field='accDate' headerText="Date" type="date" [format]="{type: 'date', format:'dd-MMM-yyyy'}" width="100" minWidth="100"></e-column>
+                <e-column field='expTotalAmt' headerText="Expense Total Amt" width="150" minWidth="150" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='incTotalAmt' headerText="Income Total Amt" width="150" minWidth="150" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='incCreditAmt' headerText="Income Credit Amt" width="160" minWidth="150" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='incReceiveAmt' headerText="Income Receive Amt" width="170" minWidth="160" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='remark' headerText="Remark" width="300" minWidth="100"></e-column>
+              </e-columns>
+              <ng-template #editSettingsTemplate let-data>
+                <form [formGroup]="dailyGateAccForm">
+                    <div class="row mb-2">
+                        <div class="form-group">
+                          <label class="required">Gate</label>
+                          <ejs-dropdownlist formControlName="gateCode" [dataSource]="gateList" [fields]="{ text: 'gateName', value: 'gateCode' }"  [autofocus]="true" [readonly]="isEditMode"></ejs-dropdownlist>
+                          <div [style.visibility]='validateControl("gateCode")? "visible": "hidden"'>
+                              <label class="e-error" style="display: block;">*Gate is required</label>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="form-group">
+                          <label class="required">Date</label>
+                          <ejs-datepicker formControlName="accDate" [format]="'dd-MMM-yyyy'" ></ejs-datepicker>
+                          <div [style.visibility]='validateControl("accDate")? "visible": "hidden"'>
+                              <label class="e-error" style="display: block;">*Date is required</label>
+                          </div>
+                      </div>
+                    </div>
+                </form>
+              </ng-template>
+            </ejs-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  

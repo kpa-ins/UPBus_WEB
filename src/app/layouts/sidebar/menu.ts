@@ -74,21 +74,9 @@ export const MENU: MenuItem[] = [
                 parentId: 3
             },
             {
-                id: 11,
-                label: 'Daily Gate Expense',
-                link: '/daily-acc/daily-gate-expense',
-                parentId: 3
-            },
-            {
-                id: 12,
-                label: 'Daily Gate Income',
-                link: '/daily-acc/daily-gate-income',
-                parentId: 3
-            },
-            {
                 id: 13,
                 label: 'Trip Acc',
-                link: '/daily-acc/trip-acc',
+                link: '/daily-acc/trip-acc-list',
                 parentId: 3
             },
            
@@ -109,13 +97,6 @@ export const MENU: MenuItem[] = [
         ]
     },
 
-
-    // {
-    //     id: 12,
-    //     label: 'MENUITEMS.FILEMANAGER.TEXT',
-    //     icon: 'bx-file',
-    //     link: '/filemanager',
-    // },
     {
         id: 22,
         label: 'Utility',

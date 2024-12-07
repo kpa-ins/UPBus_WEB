@@ -1,0 +1,47 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">Trip Acc</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Daily Acc</a></li>
+              <li class="breadcrumb-item active">Trip Acc</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+              <e-columns>
+                <e-column field='tripID' headerText='ID' [isPrimaryKey]="true" width="120" minWidth="100"></e-column>
+                <e-column field='busNo' headerText="Bus No" width="120" minWidth="120"></e-column>
+                <e-column field='driverName' headerText="Driver" width="150" minWidth="150"></e-column>
+                <e-column field='downDate' headerText="Down Date" type="date" [format]="{type: 'date', format:'dd-MMM-yyyy'}" width="150" minWidth="150"></e-column>
+                <e-column field='dGateCode' headerText="Down Gate" width="100" minWidth="100"></e-column>
+                <e-column field='dTrackName' headerText="Down Track Name" width="250" minWidth="200"></e-column>
+                <e-column field='dExpTotal' headerText="Down Expense Total" width="180" minWidth="150" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='dIncTotal' headerText="Down Income Total" width="180" minWidth="150" textAlign="right" headerTextAlign="left"></e-column>
+
+                <e-column field='upDate' headerText="Up Date" type="date" [format]="{type: 'date', format:'dd-MMM-yyyy'}" width="150" minWidth="150"></e-column>
+                <e-column field='ugateCode' headerText="Up Gate" width="100" minWidth="100"></e-column>
+                <e-column field='uTrackName' headerText="Up Track Name" width="250" minWidth="140"></e-column>
+                <e-column field='uExpTotal' headerText="Up Expense Total" width="180" minWidth="160" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='uIncTotal' headerText="Up Income Total" width="180" minWidth="160" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='dremark' headerText="Down Remark" width="400" minWidth="200"></e-column>
+                <e-column field='uremark' headerText="Up Remark" width="400" minWidth="200"></e-column>
+              </e-columns>
+            </ejs-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  

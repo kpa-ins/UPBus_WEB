@@ -25,8 +25,8 @@ export class DailyGateIncomeService {
     return this.http.put<any>(`${environment.baseUrl}/api/DailyAcc/UpdateDailyGateIncome`, data, httpOptions);
   }
 
-  deleteDailyGateIncome(id: any) {
-    return this.http.delete<any>(`${environment.baseUrl}/api/DailyAcc/DeleteDailyGateIncome/${id}`, httpOptions);
+  deleteDailyGateIncome(id: any, date: any) {
+    return this.http.delete<any>(`${environment.baseUrl}/api/DailyAcc/DeleteDailyGateIncome/?id=${id}&date=${date}`, httpOptions);
   }
 
   getActiveGate() {
@@ -34,8 +34,18 @@ export class DailyGateIncomeService {
   }
 
   getActiveIncomeType() {
-    return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetActiveIncomeType`);
+    const incomeType="GATE";
+    return this.http.get<any>(`${environment.baseUrl}/api/MasterSetup/GetActiveIncomeType/?type=${incomeType}`);
   }
+
+  getDailyGateAccById(gate: string, date: any) {
+    return this.http.get<any>(`${environment.baseUrl}/api/DailyAcc/GetDailyGateAccById/?gate=${gate}&date=${date}`);
+  }
+
+  updateDailyGateAcc(data: any) {
+    return this.http.put<any>(`${environment.baseUrl}/api/DailyAcc/UpdateDailyGateAcc`, data, httpOptions);
+  }
+
 
 
 }
