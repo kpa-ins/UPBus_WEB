@@ -62,6 +62,7 @@ export class IncomeTypeComponent {
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
+        this.grid.searchSettings.operator = "equal";
         this.spinner.hide();
     });
   }
@@ -69,7 +70,7 @@ export class IncomeTypeComponent {
   rowDataBound(args): void {
     let data = args.data['active'];
     if (data === false) {
-        args.row.classList.add('active');
+        args.row.classList.add('inactive');
     }
   }
 

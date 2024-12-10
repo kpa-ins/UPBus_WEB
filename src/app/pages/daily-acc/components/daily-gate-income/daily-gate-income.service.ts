@@ -13,8 +13,8 @@ export class DailyGateIncomeService {
 
   constructor(private http: HttpClient) { }
 
-  getDailyGateIncomeList() {
-    return this.http.get<any>(`${environment.baseUrl}/api/DailyAcc/GetDailyGateIncomeList`);
+  getDailyGateIncomeList(id: any) {
+    return this.http.get<any>(`${environment.baseUrl}/api/DailyAcc/GetDailyGateIncomeList/${id}`);
   }
 
   createDailyGateIncome(data: any) {

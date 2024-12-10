@@ -16,12 +16,10 @@ import { DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { DatePickerModule, DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { CommonModule } from '@angular/common';
 import * as moment from 'moment';
-import { DailyGateExpenseService } from './daily-gate-expense.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getFullYear } from 'ngx-bootstrap/chronos';
-
+import { StockService } from '../stock.service';
 @Component({
-  selector: 'app-daily-gate-expense',
+  selector: 'app-stock-history',
   standalone: true,
   imports: [
     CommonModule,
@@ -35,30 +33,34 @@ import { getFullYear } from 'ngx-bootstrap/chronos';
     DateTimePickerModule,
     NumericTextBoxAllModule,
   ],
-  templateUrl: './daily-gate-expense.component.html',
-  styleUrl: './daily-gate-expense.component.scss'
+  templateUrl: './stock-history.component.html',
+  styleUrl: './stock-history.component.scss'
 })
-export class DailyGateExpenseComponent {
+export class StockHistoryComponent {
   pageSettings: PageSettingsModel = { pageSize: 10 };
-  editSettings: EditSettingsModel = { allowAdding: true, allowEditing: true, allowDeleting: true, mode: 'Dialog' };
-  toolbar: ToolbarItems[] = ['Add', 'Edit', 'Delete', 'Search'];
+  editSettings: EditSettingsModel = { allowAdding: true, allowEditing: false, allowDeleting: true, mode: 'Dialog' };
+  toolbar: any[]= ['Add', 
+    { text: "Cancel", tooltipText: "Cancel", prefixIcon: "e-cancel", id: "cancel" },
+    'Search'];
   submitClicked: boolean = false;
 
-  dailyGateAccForm: any;
-  dailyGateExpenseForm: any;
-  expenseTypeList: any[] = [];
-  gateList: any[] = [];
-  paidTypeList: any[] = ["Credit", "Paid"];
+  stockForm: any;
+  stockHistoryForm: any;
+  busList: any[] = [];
+  stockTypeList: any[] = ["Receive", "Issue"];
+  stTypeList: any[] = ["All","Receive", "Issue"];
   isEditMode: boolean = false;
-  gate: string;
-  date: string;
-  gateAccCode: string;
-  currentYear: number;
+  id: string;
+  isShow: boolean = true;
+  balance: number;
+  oldQty:number;
+  stockType: string = "All";
+  bus: string="All";
 
   @ViewChild('Grid') public grid: GridComponent;
 
   constructor(
-    private service: DailyGateExpenseService,
+    private service: StockService,
     private spinner: NgxSpinnerService,
     public toastr:ToastrService,
     private route: ActivatedRoute,
@@ -67,86 +69,56 @@ export class DailyGateExpenseComponent {
 
   ngOnInit(): void {
 
-    const id = this.route.snapshot.queryParams['id'];
-    this.gateAccCode = id;
-    const strArr = id.split('-');
-    this.gate = strArr[0];
-    const d = strArr[1];
-
-    const currentDate = new Date();
-    this.currentYear = currentDate.getFullYear();  // Get the current year
-
-    this.date = d.substring(2, 4)+ "/" + d.substring(0, 2) +"/"+ this.currentYear;
-
-    this.dailyGateAccForm = new FormGroup({
-      gateCode: new FormControl(''),
-      accDate: new FormControl(''),
-      incTotalAmt: new FormControl(''),
-      expTotalAmt: new FormControl(''),
-      incCreditAmt: new FormControl(''),
-      incReceiveAmt: new FormControl(''),
-      remark: new FormControl(''),
+    this.id = this.route.snapshot.queryParams['id'];
+  
+    this.stockForm = new FormGroup({
+      stockCode: new FormControl(''),
+      stockName: new FormControl(''),
+      balance: new FormControl(''),
+      lastPrice: new FormControl(''),
+     
     });
 
     this.loadTableData();
-    this.getActiveGate();
-    this.getActiveExpenseType();
-    this.getDailyGateAccById();
+    this.getBusList();
+    this.getStockMainById();
+
+    this.bus = this.busList[0]?.busNo;
+    
   }
 
 
-  getDailyGateAccById() {
+  getStockMainById() {
     this.spinner.show();
-    this.service.getDailyGateAccById(this.gate, this.date)
+    this.service.getStockMainById(this.id)
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         if (result) {
-          this.dailyGateAccForm.controls['gateCode'].setValue(result[0].gateCode);
-          this.dailyGateAccForm.controls['accDate'].setValue(result[0].accDate);
-          this.dailyGateAccForm.controls['incTotalAmt'].setValue(result[0].incTotalAmt);
-          this.dailyGateAccForm.controls['expTotalAmt'].setValue(result[0].expTotalAmt);
-          this.dailyGateAccForm.controls['incCreditAmt'].setValue(result[0].incCreditAmt);
-          this.dailyGateAccForm.controls['incReceiveAmt'].setValue(result[0].incReceiveAmt);
-          this.dailyGateAccForm.controls['remark'].setValue(result[0].remark);
-
-          this.dailyGateAccForm.controls['gateCode'].disable();
-          this.dailyGateAccForm.controls['accDate'].disable();
-          this.dailyGateAccForm.controls['incTotalAmt'].disable();
-          this.dailyGateAccForm.controls['expTotalAmt'].disable();
-          this.dailyGateAccForm.controls['incCreditAmt'].disable();
-          this.dailyGateAccForm.controls['incReceiveAmt'].disable();
+          this.stockForm.controls['stockCode'].setValue(result[0].stockCode);
+          this.stockForm.controls['stockName'].setValue(result[0].stockName);
+          this.stockForm.controls['balance'].setValue(result[0].balance);
+          this.stockForm.controls['lastPrice'].setValue(result[0].lastPrice);
+        
+          this.stockForm.controls['stockCode'].disable();
+          this.stockForm.controls['balance'].disable();
+          this.stockForm.controls['lastPrice'].disable();
+          this.stockForm.controls['stockName'].disable();
+         
+          this.balance = result[0].balance;
 
         } else {
-          Swal.fire('Daily Gate Acc', 'Data not found!', 'error');
+          Swal.fire('Stock', 'Data not found!', 'error');
         }
 
         this.spinner.hide();
     });
   }
 
-  getActiveGate() {
-    this.service.getActiveGate()
-      .pipe(catchError((err) => of(this.showError(err))))
-      .subscribe((result) => {
-        if (result) {
-          this.gateList = result;
-        }
-      });
-  }
 
-  getActiveExpenseType() {
-    this.service.getActiveExpenseType()
-      .pipe(catchError((err) => of(this.showError(err))))
-      .subscribe((result) => {
-        if (result) {
-          this.expenseTypeList = result;
-        }
-      });
-  }
 
   loadTableData() {
     this.spinner.show();
-    this.service.getDailyGateExpenseList(this.gateAccCode)
+    this.service.getStockHistoryList(this.id, this.stockType, this.bus)
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
@@ -155,23 +127,35 @@ export class DailyGateExpenseComponent {
     });
   }
 
+  getBusList() {
+    this.service.getBusList()
+      .pipe(catchError((err) => of(this.showError(err))))
+      .subscribe((result) => {
+        if (result) {
+          this.busList = result;
+          this.busList.unshift({"busNo": "All"})
+          this.bus = this.busList[0].busNo;
+        }
+      });
+  }
+
+
   backToList() {
-    this.router.navigate(["/daily-acc/daily-gate-acc"]);
+    this.router.navigate(["/daily-acc/stock-main"]);
   }
 
   onFormSubmit() {
-    const formData = this.dailyGateAccForm.value;
-    formData.gateCode = this.gate;
-    formData.accDate = this.date;
+    const formData = this.stockForm.value;
+    formData.stockCode = this.id;
     this.spinner.show();
     this.service
-      .updateDailyGateAcc(formData)  // Pass the updated formData here
+      .updateStockMain(formData)  // Pass the updated formData here
       .pipe(catchError((err) => of(this.showError(err))))  // Handle errors if any
       .subscribe((result) => {
         this.spinner.hide(); // Hide the spinner after update
         if (result.status === true) {
           this.showSuccess(result.messageContent);  // Show success message
-          this.getDailyGateAccById();
+          this.getStockMainById();
           this.loadTableData(); // Refresh the table with updated data
          
         } else {
@@ -185,31 +169,37 @@ export class DailyGateExpenseComponent {
     if (args.requestType === 'add') {
         this.submitClicked = false;
         this.isEditMode = false;
-        this.dailyGateExpenseForm = this.createFormGroup(args.rowData);
+        this.stockHistoryForm = this.createFormGroup(args.rowData);
         return;
     }
 
     if (args.requestType === 'beginEdit') {
       this.submitClicked = false;
       this.isEditMode = true;
-      this.dailyGateExpenseForm = this.updateFormGroup(args.rowData);
+      this.stockHistoryForm = this.updateFormGroup(args.rowData);
       return;
   }
 
     if (args.requestType === 'save') {
         this.submitClicked = true;
-        if (this.dailyGateExpenseForm.valid) {
-            let formData = this.dailyGateExpenseForm.value;
-            formData.gateAccCode = this.gateAccCode;
-            formData.accDate = this.date;
+        if (this.stockHistoryForm.valid) {
+            let formData = this.stockHistoryForm.value;
             if (args.action === 'add') {
-              formData.expDate = moment(formData.expDate).format('MM/DD/YYYY');
-              this.createDailyGateExpense(formData);
+              formData.stockDate = moment(formData.stockDate).format('MM/DD/YYYY');
+              if(formData.qty > this.balance && formData.stockType === "Issue"){
+                Swal.fire('Error', 'Issue qty is greater than balance!', 'error');
+              }
+              else{
+                this.createStockHistory(formData);
+              }
             }
             else {
-              formData.expDate = moment(formData.expDate).format('MM/DD/YYYY');
-
-              this.updateDailyGateExpense(formData);
+              if((formData.qty > (this.balance + this.oldQty)) && formData.stockType === "Issue"){
+                Swal.fire('Error', 'Issue qty is greater than balance!', 'error');
+              }
+              else{
+                this.updateStockHistory(formData);
+              } 
             }
         } else {
             args.cancel = true;
@@ -217,50 +207,62 @@ export class DailyGateExpenseComponent {
         return;
     }
 
-    if (args.requestType === 'delete') {
-      args.cancel = true;
-      const data = args.data as any[];
-      const id = data[0].expNo;
-      this.deleteDailyGateExpense(id);
-    }
   }
 
-  createDailyGateExpense(formData: any) {
+  createStockHistory(formData: any) {
     this.spinner.show();
     this.service
-      .createDailyGateExpense(formData)
+      .createStockHistory(formData)
       .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.spinner.hide();
         if (result.status) {
           this.showSuccess(result.messageContent);
-          this.getDailyGateAccById();
+          this.getStockMainById();
           this.loadTableData();
         } else {
           Swal.fire('Error', result.messageContent, 'error');
           this.loadTableData();
-          this.getDailyGateAccById();
+          this.getStockMainById();
         }
       });
   }
 
 
-  updateDailyGateExpense(formData: any) {
+  updateStockHistory(formData: any) {
     this.spinner.show();
     this.service
-      .updateDailyGateExpense(formData)  // Pass the updated formData here
+      .updateStockHistory(formData)  // Pass the updated formData here
       .pipe(catchError((err) => of(this.showError(err))))  // Handle errors if any
       .subscribe((result) => {
         this.spinner.hide(); // Hide the spinner after update
         if (result.status === true) {
           this.showSuccess(result.messageContent);  // Show success message
-          this.getDailyGateAccById();
+          this.getStockMainById();
           this.loadTableData(); // Refresh the table with updated data
         } else {
           Swal.fire('Error', result.messageContent, 'error'); // Show error if updating fails
           this.loadTableData(); 
         }
       });
+  }
+
+  rowDataBound(args): void {
+    let data = args.data['isCancel'];
+  let stype = args.data['stockType'];
+
+  // Check if both conditions are true and apply both classes
+  if (data === true &&  (stype === "Receive" || stype === "Issue")) {
+    args.row.classList.add('inactive');
+  } else {
+    // Add individual classes if conditions are separate
+    if (data === true) {
+      args.row.classList.add('inactive');
+    }
+    if (stype === "Receive") {
+      args.row.classList.add('stockType');
+    }
+  }
   }
 
   actionComplete(args: DialogEditEventArgs): void {
@@ -272,40 +274,41 @@ export class DailyGateExpenseComponent {
         }
 
         const dialog = args.dialog;
-        dialog.header = args.requestType === 'beginEdit' ? 'Edit Daily Gate Expense': 'Add New Daily Gate Expense';
+        dialog.header = args.requestType === 'beginEdit' ? 'Edit Stock History': 'Add New Stock History';
     }
   }
 
   createFormGroup(data: any): FormGroup {
     return new FormGroup({
-      gateCode: new FormControl(this.gate, Validators.required),
-      expDate: new FormControl(new Date(), Validators.required),
-      expCode: new FormControl('', Validators.required),
-      paidType: new FormControl('Paid', Validators.required),
-      amount: new FormControl(0, Validators.required),   
-      description: new FormControl(''),
+      stockCode: new FormControl(this.id, Validators.required),
+      stockDate: new FormControl(new Date(), Validators.required),
+      stockType: new FormControl('', Validators.required),
+      qty: new FormControl(1, Validators.required),
+      busNo: new FormControl(''),
+      lastPrice: new FormControl(0),   
       remark: new FormControl(''),
     });
   }
 
   updateFormGroup(data: any): FormGroup {
+    this.oldQty = data.qty;
     return new FormGroup({
-      expNo: new FormControl(data.expNo, Validators.required),
-      gateCode: new FormControl(data.gateCode, Validators.required),
-      expDate: new FormControl(data.expDate, Validators.required),
-      expCode: new FormControl(data.expCode, Validators.required),
-      paidType: new FormControl(data.paidType, Validators.required),
-      amount: new FormControl(data.amount, Validators.required),   
-      description: new FormControl(data.description),
+      regNo: new FormControl(data.regNo),
+      stockCode: new FormControl(data.stockCode, Validators.required),
+      stockDate: new FormControl(data.stockDate, Validators.required),
+      stockType: new FormControl(data.stockType, Validators.required),
+      qty: new FormControl(data.qty, Validators.required),
+      busNo: new FormControl(data.busNo),  
+      lastPrice: new FormControl(data.lastPrice), 
       remark: new FormControl(data.remark),
     });
   }
 
 
-  deleteDailyGateExpense(id: any) {
+  cancelStockHistory(id: any) {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You will not be able to recover this data!',
+      //text: 'You will not be able to recover this data!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#DD6B55',
@@ -315,16 +318,16 @@ export class DailyGateExpenseComponent {
       if (response.value) {
         this.spinner.show();
         this.service
-          .deleteDailyGateExpense(id, this.date)
+          .cancelStockHistory(id)
           .pipe(catchError((err) => of(this.showError(err))))
           .subscribe((result) => {
             this.spinner.hide();
             if (result.status === true) {
               this.showSuccess(result.messageContent);
               this.loadTableData();
-              this.getDailyGateAccById();
+              this.getStockMainById();
             } else {
-              Swal.fire('Daily Gate Expense', result.messageContent, 'error');
+              Swal.fire('Stock History', result.messageContent, 'error');
             }
           });
       } else if (response.dismiss === Swal.DismissReason.cancel) {
@@ -334,10 +337,13 @@ export class DailyGateExpenseComponent {
   }
 
 
-  onExpenseTypeChange(expCode: string) {
-    if(expCode){
-      const expList = this.expenseTypeList.filter(x=>x.expCode==expCode);
-      this.dailyGateExpenseForm.controls['description'].setValue(expList[0].expName);
+  onStockTypeChange(type: string) {
+    if(type === "Receive"){
+      this.isShow= true;
+    }
+    else{
+      this.isShow= false;
+      this.stockHistoryForm.get("busNo").setValidators(Validators.required);
     }
   }
 
@@ -345,32 +351,43 @@ export class DailyGateExpenseComponent {
     let inputValue = event.target.value;
     
     // Check if input is a number and between 1 and 9
-    if (inputValue < 0 ) {
+    if (inputValue < 1 ) {
       event.target.value = ''; // Clear invalid input
     }
   }
 
   validateControl(controlName: string) {
-    const control = this.dailyGateExpenseForm.get(controlName);
+    const control = this.stockHistoryForm.get(controlName);
     return (control.invalid && (control.dirty || control.touched)) || (control.invalid && this.submitClicked);
   }
 
   showSuccess(msg: string) {
     this.spinner.hide();
-    this.toastr.success(msg, 'Daily Gate Expense', {
+    this.toastr.success(msg, 'Stock History', {
       timeOut: 2000,
     });
   }
 
   showError(error: HttpErrorResponse) {
     this.spinner.hide();
-    Swal.fire('Daily Gate Expense', error.toString(), 'error');
+    Swal.fire('Stock History', error.toString(), 'error');
   }
 
   toolbarClick(args: ClickEventArgs): void {
     if(args.item.text === 'Excel Export') {
       this.grid.excelExport({
-        fileName:'DailyGateExpense.xlsx'});
+        fileName:'StockHistory.xlsx'});
+    }
+
+    if (args.item.id === 'cancel') {
+      let selectedrecords: any[] = this.grid.getSelectedRecords();
+      if (selectedrecords.length == 0) {
+        Swal.fire('Stock History', "Please select one row!", 'warning');
+      } else {
+        const id = selectedrecords[0].regNo;
+        this.cancelStockHistory(id);
+      }
+      return;
     }
   }
 
@@ -384,4 +401,3 @@ export class DailyGateExpenseComponent {
   }
 
 }
-

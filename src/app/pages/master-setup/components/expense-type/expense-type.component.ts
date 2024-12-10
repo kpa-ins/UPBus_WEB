@@ -39,7 +39,7 @@ export class ExpenseTypeComponent {
   expenseType: string;
   expenseTypeForm: any;
   expenseTypeList: any[] = ["GATE", "BUS","TRIP"];
-  expTypeList: any[] = ["GATE", "BUS","TRIP"];
+  expTypeList: any[] = ["All","GATE", "BUS","TRIP"];
 
 
   @ViewChild('Grid') public grid: GridComponent;
@@ -52,7 +52,7 @@ export class ExpenseTypeComponent {
 
   ngOnInit(): void {
     //this.loadTableData();
-    this.expTypeList.unshift("All");
+    //this.expTypeList.unshift("All");
 
   }
 
@@ -62,6 +62,7 @@ export class ExpenseTypeComponent {
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
+        this.grid.searchSettings.operator = "equal";
         this.spinner.hide();
     });
   }
@@ -69,7 +70,7 @@ export class ExpenseTypeComponent {
   rowDataBound(args): void {
     let data = args.data['active'];
     if (data === false) {
-        args.row.classList.add('active');
+        args.row.classList.add('inactive');
     }
   }
 

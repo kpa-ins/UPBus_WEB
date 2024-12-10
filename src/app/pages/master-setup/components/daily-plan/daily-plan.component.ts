@@ -90,6 +90,7 @@ export class DailyPlanComponent {
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
+        this.grid.searchSettings.operator = "equal";
         this.spinner.hide();
     });
   }
@@ -120,7 +121,7 @@ export class DailyPlanComponent {
       this.submitClicked = false;
       this.dailyPlanForm = this.updateFormGroup(args.rowData);
       return;
-  }
+    }
 
     if (args.requestType === 'save') {
         this.submitClicked = true;

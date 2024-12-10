@@ -74,6 +74,18 @@ export const MENU: MenuItem[] = [
                 parentId: 3
             },
             {
+                id: 10,
+                label: 'Bus Stock',
+                link: '/daily-acc/stock-main',
+                parentId: 3
+            },
+            {
+                id: 10,
+                label: 'Bus Expense',
+                link: '/daily-acc/bus-expense',
+                parentId: 3
+            },
+            {
                 id: 13,
                 label: 'Trip Acc',
                 link: '/daily-acc/trip-acc-list',

@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">Stock</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Daily Acc</a></li>
+              <li class="breadcrumb-item active">Stock</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+              <e-columns>
+                <e-column field='stockCode' headerText="Code" width="60" minWidth="40" [isPrimaryKey]="true"></e-column>
+                <e-column field='stockName' headerText="Name" width="200" minWidth="100"></e-column>
+                <e-column field='balance' headerText="Balance" width="100" minWidth="80" textAlign="right" headerTextAlign="left"></e-column>
+                <e-column field='lastPrice' headerText="Last Price" width="100" minWidth="80" textAlign="right" headerTextAlign="left"></e-column>
+              </e-columns>
+              <ng-template #editSettingsTemplate let-data>
+                <form [formGroup]="stockForm">
+                    <div class="row">
+                        <div class="form-group">
+                          <div class="e-float-input e-control-wrapper">
+                            <input formControlName="stockName" id="stockName" type="text" maxlength="150"  autocomplete="off" >
+                            <span class="e-float-line"></span>
+                            <label class="e-float-text e-label-top required" for="stockName">Stock Name</label>
+                          </div>
+                          <div [style.visibility]='validateControl("stockName") ? "visible" : "hidden"'>
+                            <label class="e-error" for="stockName" style="display: block;">*Stock Name is required</label>
+                          </div>
+                        </div>
+                    </div>
+                </form>
+              </ng-template>
+            </ejs-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  

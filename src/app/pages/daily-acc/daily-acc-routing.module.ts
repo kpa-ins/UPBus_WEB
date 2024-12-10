@@ -7,6 +7,9 @@ import { TripExpenseComponent } from './components/trip-expense/trip-expense.com
 import { TripIncomeComponent } from './components/trip-income/trip-income.component';
 import { TripAccListComponent } from './components/trip-acc/trip-acc-list/trip-acc-list.component';
 import { TripAccFormComponent } from './components/trip-acc/trip-acc-form/trip-acc-form.component';
+import { StockMainComponent } from './components/stock/stock-main/stock-main.component';
+import { StockHistoryComponent } from './components/stock/stock-history/stock-history.component';
+import { BusExpenseComponent } from './components/bus-expense/bus-expense.component';
 const routes: Routes = [
   { path: 'daily-gate-acc', component: DailyGateAccComponent },
   { path: 'daily-gate-expense', component: DailyGateExpenseComponent },
@@ -15,6 +18,10 @@ const routes: Routes = [
   { path: 'trip-income', component: TripIncomeComponent },
   { path: 'trip-acc-list', component: TripAccListComponent },
   { path: 'trip-acc-form', component: TripAccFormComponent },
+
+  { path: 'stock-main', component: StockMainComponent },
+  { path: 'stock-history', component: StockHistoryComponent },
+  { path: 'bus-expense', component: BusExpenseComponent },
 
 ];
 

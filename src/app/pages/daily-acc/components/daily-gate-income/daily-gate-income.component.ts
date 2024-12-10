@@ -170,10 +170,11 @@ export class DailyGateIncomeComponent {
 
   loadTableData() {
     this.spinner.show();
-    this.service.getDailyGateIncomeList()
+    this.service.getDailyGateIncomeList(this.gateAccCode)
     .pipe(catchError((err) => of(this.showError(err))))
       .subscribe((result) => {
         this.grid.dataSource  = result;
+        this.grid.searchSettings.operator = "equal";
         this.spinner.hide();
     });
   }

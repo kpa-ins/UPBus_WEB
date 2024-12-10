@@ -1,0 +1,171 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">Stock Info</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a href="javascript: void(0);">Daily Acc</a></li>
+              <li class="breadcrumb-item"><a href="daily-acc/stock-main">Stock</a></li>
+              <li class="breadcrumb-item active">Stock History</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="stockForm" onkeydown="if(event.keyCode === 13) {   return false; }">
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="mb-4 font-size-16">Stock Info</h4>
+                </div>
+  
+                <div class="col-md-6 text-end">
+                  <button type="button" (click)="backToList()" class="btn btn-secondary">Back To List</button>
+                </div>
+              </div>
+  
+              <div class="row mt-3 mb-3"> 
+                <div class="col-lg-3 col-sm-6">
+                    <div class="mb-3">
+                        <label >Stock Code</label>
+                        <ejs-textbox formControlName="stockCode"  ></ejs-textbox>
+                    </div>
+                </div>
+               
+                <div class="col-lg-3 col-sm-6">
+                    <div class="mb-3">
+                        <label >Stock Name</label>
+                        <ejs-textbox formControlName="stockName"  ></ejs-textbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="mb-3">
+                        <label >Balance</label>
+                        <ejs-textbox formControlName="balance" ></ejs-textbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="mb-3">
+                      <label >Last Price</label>
+                      <ejs-textbox formControlName="lastPrice" ></ejs-textbox>
+                    </div>
+                </div>
+
+              </div>
+            </form>
+
+            <div class="row mb-2">
+              <!-- <div class="col-lg-2 col-md-6">
+                <div class="mt-4">
+                  <h4 class="mb-4 font-size-16">Stock History</h4>
+                </div>
+              </div> -->
+              <div class="col-lg-3 col-md-6">
+                <div class="mb-3">
+                  <label>Bus No</label>
+                  <ejs-dropdownlist [(ngModel)]="bus" [dataSource]="busList" [fields]="{ text: 'busNo', value: 'busNo' }" allowFiltering="true"    popupHeight='250px'></ejs-dropdownlist>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-6">
+                <div class="mb-3">
+                  <label>Stock Type</label>
+                  <ejs-dropdownlist [(ngModel)]="stockType" [dataSource]="stTypeList"  popupHeight='250px'></ejs-dropdownlist>
+                </div>
+              </div>
+  
+              <div class="col-lg-3 col-md-6 align-self-end">
+                <div class="mb-3">
+                  <button type="button" class="btn btn-primary w-md"  (click)="loadTableData()" class="btn btn-primary w-md h-sm"><span class="fas fa-eye"></span> &nbsp;View</button>&nbsp;&nbsp;
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+                <ejs-grid #Grid [allowSorting]="true" [allowPaging]="true" [pageSettings]='pageSettings' [editSettings]="editSettings" (rowDataBound)='rowDataBound($event)' [toolbar]="toolbar" [gridLines]="'Both'" (actionBegin)='actionBegin($event)' (actionComplete)='actionComplete($event)' [allowExcelExport]='true' (toolbarClick)='toolbarClick($event)' (excelQueryCellInfo)='exportQueryCellInfo($event)'>
+                  <e-columns>
+                    <e-column field='regNo' headerText="ID" width="100" minWidth="100" [isPrimaryKey]="true" [visible]="false"></e-column>
+                    <e-column field='stockDate' headerText="Date" type="date" [format]="{type: 'date', format:'dd-MMM-yyyy'}" width="100" minWidth="100"></e-column>
+                    <e-column field='stockType' headerText="Type" width="80" minWidth="80"></e-column>
+                    <e-column field='busNo' headerText="Bus No" width="80" minWidth="60"></e-column>
+                    <e-column field='qty' headerText="Qty" width="50" minWidth="40" textAlign="right" headerTextAlign="left"></e-column>
+                    <e-column field='lastPrice' headerText="Last Price" width="80" minWidth="70" textAlign="right" headerTextAlign="left"></e-column>
+                    <e-column field='totalAmt' headerText="Total Amt" width="80" minWidth="70" textAlign="right" headerTextAlign="left"></e-column>
+                    <e-column field='remark' headerText="Remark" width="300" minWidth="100"></e-column>
+                    <e-column field="isCancel" headerText="Is Cancle?" width="70" minWidth="70">
+                      <ng-template #template let-data>
+                         <span >{{ data.isCancel ? 'Yes' : 'No' }}</span>
+                      </ng-template>
+                    </e-column>
+                  </e-columns>
+                  <ng-template #editSettingsTemplate let-data>
+                    <form [formGroup]="stockHistoryForm">
+                        <div class="row mb-2">   
+                          <div class="form-group col-md-6">
+                            <label class="required">Date</label>
+                            <ejs-datepicker formControlName="stockDate" [format]="'dd-MMM-yyyy'" [readonly]="isEditMode"></ejs-datepicker>
+                            <div [style.visibility]='validateControl("stockDate")? "visible": "hidden"'>
+                                <label class="e-error" style="display: block;">*Date is required</label>
+                            </div>
+                          </div>    
+                          <div class="form-group col-md-6">
+                              <label class="required">Stock Type</label>
+                              <ejs-dropdownlist formControlName="stockType" [dataSource]="stockTypeList"  (change)="onStockTypeChange($event.value)"  allowFiltering="true"></ejs-dropdownlist>
+                              <div [style.visibility]='validateControl("stockType")? "visible": "hidden"'>
+                                  <label class="e-error" style="display: block;">*Stock Type is required</label>
+                              </div>
+                          </div>   
+                        </div>
+    
+                        <div class="row mb-2">  
+                          <div class="form-group col-md-6" >
+                            <label class="required">Qty</label>
+                            <ejs-numerictextbox formControlName="qty" format='#' [validateDecimalOnType]='true' min='1' (input)="validateNumberInput($event)" floatLabelType='Always' ></ejs-numerictextbox>
+                            <div [style.visibility]='validateControl("qty")? "visible": "hidden"'>
+                                <label class="e-error" style="display: block;">*Qty is required</label>
+                            </div>
+                          </div>
+
+                          <div class="form-group col-md-6" *ngIf="isShow">
+                            <label class="required">Last Price</label>
+                            <ejs-numerictextbox formControlName="lastPrice" format='#' [validateDecimalOnType]='true' min='0' (input)="validateNumberInput($event)" floatLabelType='Always' ></ejs-numerictextbox>
+                            <div [style.visibility]='validateControl("lastPrice")? "visible": "hidden"'>
+                                <label class="e-error" style="display: block;">*Last Price is required</label>
+                            </div>
+                          </div>
+                          <div class="form-group col-md-6" *ngIf="!isShow">
+                              <label class="required">Bus No</label>
+                              <ejs-dropdownlist formControlName="busNo" [dataSource]='busList' [fields]="{ text: 'busNo', value: 'busNo' }" allowFiltering="true" popupHeight='200px' floatLabelType='Always' ></ejs-dropdownlist>
+                              <div [style.visibility]='validateControl("busNo")? "visible": "hidden"'>
+                                  <label class="e-error" style="display: block;">*Bus No is required</label>
+                              </div>
+                          </div>      
+                        </div>
+    
+                        <div class="row mb-2"> 
+                          <div class="form-group col-md-6 text-area">
+                              <label >Remark</label>
+                              <ejs-textbox formControlName="remark" rows="2" [multiline]="true" maxlength="500" autocomplete="off" floatLabelType='Always'></ejs-textbox>
+                              <div [style.visibility]='validateControl("remark")? "visible": "hidden"'>
+                                <label class="e-error" style="display: block;">*Remark is required</label>
+                              </div>
+                          </div>
+                        </div>
+                    </form>
+                  </ng-template>
+                </ejs-grid>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+  

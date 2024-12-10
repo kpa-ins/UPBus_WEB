@@ -196,8 +196,13 @@ label.required:after {
 }
 
 
-.e-grid .e-row.active  .e-rowcell{
+.e-grid .e-row.inactive  .e-rowcell{
   color: #FF3740;
+  // color: #F77E17;
+}
+
+.e-grid .e-row.stockType  .e-rowcell{
+  color: #2537be;
   // color: #F77E17;
 }
 

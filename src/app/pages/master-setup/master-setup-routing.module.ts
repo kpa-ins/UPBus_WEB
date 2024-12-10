@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { StationComponent } from './components/station/station.component';
 import { VehicleComponent } from './components/vehicle/vehicle.component';
 import { BusComponent } from './components/bus/bus.component';
 import { GateComponent } from './components/gate/gate.component';
@@ -12,7 +11,6 @@ import { GasStationComponent } from './components/gas-station/gas-station.compon
 
 
 const routes: Routes = [
-  { path: 'station', component: StationComponent },
   { path: 'bus', component: BusComponent },
   { path: 'gate', component: GateComponent },
   { path: 'daily-plan', component: DailyPlanComponent },

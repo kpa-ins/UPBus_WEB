@@ -13,8 +13,8 @@ export class DailyGateExpenseService {
 
   constructor(private http: HttpClient) { }
 
-  getDailyGateExpenseList() {
-    return this.http.get<any>(`${environment.baseUrl}/api/DailyAcc/GetDailyGateExpenseList`);
+  getDailyGateExpenseList(id: any) {
+    return this.http.get<any>(`${environment.baseUrl}/api/DailyAcc/GetDailyGateExpenseList/${id}`);
   }
 
   createDailyGateExpense(data: any) {
